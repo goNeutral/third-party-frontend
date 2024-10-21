@@ -3,6 +3,7 @@ import {
   Users,
   Settings,
   Bookmark,
+  PackageSearch,
   SquarePen,
   LayoutGrid,
   LucideIcon
@@ -45,32 +46,16 @@ export function getMenuList(pathname: string): Group[] {
       groupLabel: "Contents",
       menus: [
         {
-          href: "",
-          label: "Posts",
-          active: pathname.includes("/posts"),
-          icon: SquarePen,
-          submenus: [
-            {
-              href: "/posts",
-              label: "All Posts"
-            },
-            {
-              href: "/posts/new",
-              label: "New Post"
-            }
-          ]
-        },
-        {
-          href: "/categories",
-          label: "Categories",
-          active: pathname.includes("/categories"),
+          href: "/suppliers",
+          label: "Suppliers",
+          active: pathname.includes("/suppliers"),
           icon: Bookmark
         },
         {
-          href: "/tags",
-          label: "Tags",
-          active: pathname.includes("/tags"),
-          icon: Tag
+          href: "/products",
+          label: "Products",
+          active: pathname.includes("/products"),
+          icon: PackageSearch
         }
       ]
     },

@@ -1,19 +1,22 @@
 "use client";
 
 import { cn } from "@/lib/utils";
-import { useStore } from "@/hooks/use-store";
+import React from "react";
+// import { useStore } from "@/hooks/use-store";
 import { Footer } from "@/components/admin-panel/footer";
 import { Sidebar } from "@/components/admin-panel/sidebar";
-import { useSidebarToggle } from "@/hooks/use-sidebar-toggle";
+import { useRecoilState } from "recoil";
+import { sidebarToggleAtom } from "@/hooks/use-sidebar-toggle";
 
-export default function AdminPanelLayout({
+const AdminPanelLayout = ({
   children
 }: {
   children: React.ReactNode;
-}) {
-  const sidebar = useStore(useSidebarToggle, (state) => state);
+}) => {
+  const sidebar = {isOpen: true}; // useStore(useSidebarToggle, (state) => state);
+  const [sidebarToggle, setSidebarToggle] = useRecoilState(sidebarToggleAtom);
 
-  if (!sidebar) return null;
+  if (!sidebarToggle) return null;
 
   return (
     <>
@@ -21,7 +24,7 @@ export default function AdminPanelLayout({
       <main
         className={cn(
           "min-h-[calc(100vh_-_56px)] bg-zinc-50 dark:bg-zinc-900 transition-[margin-left] ease-in-out duration-300",
-          sidebar?.isOpen === false ? "lg:ml-[90px]" : "lg:ml-72"
+          sidebarToggle === false ? "lg:ml-[90px]" : "lg:ml-72"
         )}
       >
         {children}
@@ -29,7 +32,7 @@ export default function AdminPanelLayout({
       <footer
         className={cn(
           "transition-[margin-left] ease-in-out duration-300",
-          sidebar?.isOpen === false ? "lg:ml-[90px]" : "lg:ml-72"
+          sidebarToggle === false ? "lg:ml-[90px]" : "lg:ml-72"
         )}
       >
         <Footer />
@@ -37,3 +40,5 @@ export default function AdminPanelLayout({
     </>
   );
 }
+
+export default AdminPanelLayout;
