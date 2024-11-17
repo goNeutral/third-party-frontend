@@ -1,55 +1,59 @@
 import {
-  Tag,
   Users,
   Settings,
-  Bookmark,
+  ShoppingCart,
   PackageSearch,
-  SquarePen,
-  LayoutGrid,
-  LucideIcon
+  Truck,
+  type LucideIcon
 } from "lucide-react";
 
-type Submenu = {
+interface Submenu {
   href: string;
   label: string;
   active?: boolean;
-};
+}
 
-type Menu = {
+interface Menu {
   href: string;
   label: string;
   active: boolean;
   icon: LucideIcon;
   submenus?: Submenu[];
-};
+}
 
-type Group = {
+interface Group {
   groupLabel: string;
   menus: Menu[];
-};
+}
 
 export function getMenuList(pathname: string): Group[] {
   return [
+    // {
+    //   groupLabel: "",
+    //   menus: [
+    //     {
+    //       href: "/dashboard",
+    //       label: "Dashboard",
+    //       active: pathname.includes("/dashboard"),
+    //       icon: LayoutGrid,
+    //       submenus: []
+    //     }
+    //   ]
+    // },
     {
       groupLabel: "",
-      menus: [
-        {
-          href: "/dashboard",
-          label: "Dashboard",
-          active: pathname.includes("/dashboard"),
-          icon: LayoutGrid,
-          submenus: []
-        }
-      ]
-    },
-    {
-      groupLabel: "Contents",
       menus: [
         {
           href: "/suppliers",
           label: "Suppliers",
           active: pathname.includes("/suppliers"),
-          icon: Bookmark
+          icon: Truck
+        },
+        {
+          href: "/customers",
+          label: "Customers",
+          active: pathname.includes("/customers"),
+          icon: ShoppingCart
         },
         {
           href: "/products",

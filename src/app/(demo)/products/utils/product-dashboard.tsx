@@ -1,4 +1,4 @@
-import React, { useState, useRef,  } from "react"
+import React, { useState, useRef, } from "react"
 import Image from "next/image"
 import { Plus, Search, X, Upload } from "lucide-react"
 import { Button } from "@/components/ui/button"
@@ -18,9 +18,11 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet"
 import { Label } from "@/components/ui/label"
-import { Navbar } from "./admin-panel/navbar"
-import { Card } from "./ui/card"
-import AddProductForm from "./forms/add-product"
+import { Navbar } from "../../../../components/admin-panel/navbar"
+import { Card } from "../../../../components/ui/card"
+import AddProductForm from "../../../../components/forms/add-product"
+import { useAtom } from "jotai"
+import { productsQueryAtom } from "./store"
 
 // Placeholder data
 const initialProducts = [
@@ -36,7 +38,6 @@ export function ProductDashboardComponent() {
   const [newProduct, setNewProduct] = useState({ name: "", hsnCode: "", image: null })
   const [isAddingProduct, setIsAddingProduct] = useState(false)
   const [editingProduct, setEditingProduct] = useState(null)
-  const fileInputRef = useRef(null);
   const editFileInputRef = useRef(null);
 
   const filteredProducts = products.filter((product) =>
@@ -89,7 +90,7 @@ export function ProductDashboardComponent() {
       <Input
         placeholder="Search products or HSN codes"
         value={searchTerm}
-        onChange={(e) => {setSearchTerm(e.target.value)}}
+        onChange={(e) => { setSearchTerm(e.target.value) }}
         className="pl-8"
       />
     </div>
@@ -112,21 +113,53 @@ export function ProductDashboardComponent() {
     </Dialog>
   );
 
+  function ProductsList() {
+    const [productsQuery] = useAtom(productsQueryAtom)
+
+    if (productsQuery.isLoading) return <div>Loading...</div>
+    if (productsQuery.error) return <div>Error: {productsQuery.error.message}</div>
+    if (!productsQuery.data) return <div>No products found</div>
+
+    return (
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 p-4">
+        {productsQuery.data.map((product) => (
+          <div key={product.id} className="border rounded-lg p-4 shadow-sm">
+            <img
+              src={product.image}
+              alt={product.name}
+              className="w-full h-48 object-cover rounded-md mb-4"
+            />
+            <h3 className="text-lg font-semibold mb-2">{product.name}</h3>
+            <div className="text-sm text-gray-600 space-y-1">
+              <p>HSN Code: {product.hsnCode}</p>
+              <div className="flex gap-4">
+                <p>CGST: {product.cgst}</p>
+                <p>SGST: {product.sgst}</p>
+                <p>IGST: {product.igst}</p>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    )
+  }
+
   return (
     <div className="">
       <Navbar title="Product Dashboard" buttons={[AddProductButton, SearchProduct]} />
       <div className="p-5 grid gap-4 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-4">
+        <ProductsList />
         {filteredProducts.map((product) => (
           <Sheet key={product.id}>
             <SheetTrigger asChild>
               <div className="rounded-lg border bg-card text-card-foreground shadow-sm cursor-pointer hover:shadow-md transition-shadow">
                 <Card className="rounded">
-                  <Image 
-                  height={0}
-                  width={0}
-                  sizes="100vw"
-                  src={product.image} alt={product.name}
-                  className="w-full h-auto rounded-t"
+                  <Image
+                    height={0}
+                    width={0}
+                    sizes="100vw"
+                    src={product.image} alt={product.name}
+                    className="w-full h-auto rounded-t"
                   />
                   <div className="p-2">
                     <h3 className="font-bold">{product.name}</h3>
@@ -145,7 +178,7 @@ export function ProductDashboardComponent() {
                   <Input
                     id={`edit-name-${product.id}`}
                     value={editingProduct?.name ?? product.name}
-                    onChange={(e) => setEditingProduct({ ...editingProduct, name: e.target.value })}
+                    onChange={(e) => { setEditingProduct({ ...editingProduct, name: e.target.value }); }}
                     required
                   />
                 </div>
@@ -154,7 +187,7 @@ export function ProductDashboardComponent() {
                   <Input
                     id={`edit-hsnCode-${product.id}`}
                     value={editingProduct?.hsnCode ?? product.hsnCode}
-                    onChange={(e) => setEditingProduct({ ...editingProduct, hsnCode: e.target.value })}
+                    onChange={(e) => { setEditingProduct({ ...editingProduct, hsnCode: e.target.value }); }}
                     required
                   />
                 </div>
@@ -175,14 +208,14 @@ export function ProductDashboardComponent() {
                       accept="image/*"
                       className="hidden"
                       ref={editFileInputRef}
-                      onChange={(e) => handleImageUpload(e, true)}
+                      onChange={(e) => { handleImageUpload(e, true); }}
                     />
                     {editingProduct?.image && <span className="text-sm text-muted-foreground">New image selected</span>}
                   </div>
                 </div>
                 <div className="flex justify-end space-x-2">
-                  <Button type="submit" onClick={() => setEditingProduct(product)}>Save Changes</Button>
-                  <Button type="button" variant="outline" onClick={() => setEditingProduct(null)}>
+                  <Button type="submit" onClick={() => { setEditingProduct(product); }}>Save Changes</Button>
+                  <Button type="button" variant="outline" onClick={() => { setEditingProduct(null); }}>
                     <X className="mr-2 h-4 w-4" />
                     Cancel
                   </Button>

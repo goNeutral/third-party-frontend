@@ -1,6 +1,6 @@
 // import { create } from 'zustand';
 // import { persist, createJSONStorage } from 'zustand/middleware';
-import { atom } from 'recoil';
+import { atom } from 'jotai';
 
 // interface useSidebarToggleStore {
 //   isOpen: boolean;
@@ -23,7 +23,4 @@ import { atom } from 'recoil';
 // );
 
 
-export const sidebarToggleAtom = atom({
-  key: 'sidebarToggle',
-  default: true,
-})
+export const sidebarToggleAtom = atom(true);

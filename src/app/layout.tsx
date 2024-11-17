@@ -1,12 +1,12 @@
-"use client";
+'use client';
 
 // import type { Metadata } from "next";
-import React from "react";
-import { GeistSans } from "geist/font/sans";
-
-import "./globals.css";
-import { AuthProvider } from "@/providers/AuthProvider";
-import { ThemeProvider } from "@/providers/theme-provider";
+import React from 'react';
+import { GeistSans } from 'geist/font/sans';
+import { Toaster } from '@/components/ui/sonner';
+import './globals.css';
+import { AuthProvider } from '@/providers/AuthProvider';
+import { ThemeProvider } from '@/providers/theme-provider';
 
 // export const metadata: Metadata = {
 //   metadataBase: new URL(
@@ -38,21 +38,26 @@ import { ThemeProvider } from "@/providers/theme-provider";
 // };
 
 const RootLayout = ({
-  children
+	children,
 }: Readonly<{
-  children: React.ReactNode;
+	children: React.ReactNode;
 }>): JSX.Element => {
-  return (
-    <html lang="en" suppressHydrationWarning>
-      <body className={GeistSans.className}>
-        <AuthProvider>
-          <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-            {children}
-          </ThemeProvider>
-        </AuthProvider>
-      </body>
-    </html>
-  );
-}
+	return (
+		<html lang='en' suppressHydrationWarning>
+			<body className={GeistSans.className}>
+				<AuthProvider>
+					<ThemeProvider
+						attribute='class'
+						defaultTheme='system'
+						enableSystem
+					>
+						{children}
+						<Toaster />
+					</ThemeProvider>
+				</AuthProvider>
+			</body>
+		</html>
+	);
+};
 
 export default RootLayout;

@@ -1,8 +1,8 @@
-"use client";
+// "use client";
 
 import { useGoogleLogin } from '@react-oauth/google';
 import { useQuery, useMutation } from '@tanstack/react-query';
-import { useSetRecoilState, useRecoilValue } from 'recoil';
+import { useSetAtom, useAtomValue } from 'jotai';
 import { userAuthAtom as authState } from "@/store/auth";
 import { authService } from "@/utils/auth";
 
@@ -15,8 +15,8 @@ type useAuthState = {
 }
 
 const useAuth = (): useAuthState => {
-  const setAuth = useSetRecoilState(authState);
-  const auth = useRecoilValue(authState);
+  const setAuth = useSetAtom(authState)
+  const auth = useAtomValue(authState)
 
   const { mutateAsync: verifyToken } = useMutation({
     mutationFn: authService.verifyGoogleToken,

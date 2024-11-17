@@ -1,0 +1,206 @@
+"use client"
+
+import React, { type JSX } from "react"
+import {
+	Select,
+	SelectContent,
+	SelectItem,
+	SelectTrigger,
+	SelectValue
+} from "@/components/ui/select"
+import {
+	Input
+} from "@/components/ui/input"
+import { Separator } from "@/components/ui/separator"
+import { Card } from "@/components/ui/card"
+import { Table, TableBody, TableFooter, TableCaption, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
+import { Button } from "@/components/ui/button"
+import { type ProductCell } from "./CreatePOForm"
+
+
+const POFormProductForm = ({ products, setProducts }: { products: any; setProducts: any }): JSX.Element => {
+	const [newProduct, setNewProduct] = React.useState<ProductCell>({
+		id: 0,
+		name: "",
+		hsnCode: "",
+		quantity: 0,
+		uom: "",
+		rate: 0,
+		amount: 0,
+		discount: 0,
+		netAmount: 0,
+		cgst: 0,
+		sgst: 0,
+		igst: 0
+	})
+	const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
+		const { name, value } = e.target
+		// setNewInvoice((prev) => ({ ...prev, [name]: value }))
+	}
+
+	const handleSelectChange = (value: string): void => {
+		// setNewInvoice((prev) => ({ ...prev, invoice: value }))
+	}
+
+	const handleSubmit = (e: React.FormEvent): void => {
+		e.preventDefault()
+		setProducts((prev) => [...prev, newProduct])
+		setNewProduct({
+			id: 0,
+			name: "",
+			hsnCode: "",
+			quantity: 0,
+			uom: "",
+			rate: 0,
+			amount: 0,
+			discount: 0,
+			netAmount: 0,
+			cgst: 0,
+			sgst: 0,
+			igst: 0
+		})
+	}
+
+	return (
+		<Card className="rounded-sm p-2 col-span-3">
+			<Table className="border border-collapse">
+				<TableCaption>
+					<Button onClick={handleSubmit} >Add New Product</Button>
+				</TableCaption>
+				<TableHeader className="bg-accent">
+					<TableRow>
+						<TableHead className="border text-left">Description of Goods</TableHead>
+						<TableHead className="border text-left">HSN</TableHead>
+						<TableHead className="border text-right">Qty</TableHead>
+						<TableHead className="border text-right">UOM</TableHead>
+						<TableHead className="border text-right">Rate</TableHead>
+						<TableHead className="border text-right">Amount</TableHead>
+						<TableHead className="border text-right">Disc %</TableHead>
+						<TableHead className="border text-center">
+							CGST<Separator />
+							<div className="grid grid-cols-3">
+								<div className="pr-1 border-r">%</div>
+								<div className="col-span-2 pl-1">Amt</div>
+							</div>
+						</TableHead>
+						<TableHead className="border text-right">
+							SGST<Separator />
+							<div className="grid grid-cols-3">
+								<div className="pr-1 border-r">%</div>
+								<div className="col-span-2 pl-1">Amt</div>
+							</div>
+						</TableHead>
+						<TableHead className="border text-right">
+							IGST<Separator />shou
+							<div className="grid grid-cols-3">
+								<div className="pr-1 border-r">%</div>
+								<div className="col-span-2 pl-1">Amt</div>
+							</div>
+						</TableHead>
+						<TableHead className="border text-right">Net Amt</TableHead>
+					</TableRow>
+				</TableHeader>
+				<TableBody>
+					{products.map((product) => (
+						<TableRow key={product.id}>
+							<TableCell className="border text-left">{product.name}</TableCell>
+							<TableCell className="border text-left">{product.hsnCode}</TableCell>
+							<TableCell className="border text-right">{product.quantity}</TableCell>
+							<TableCell className="border text-right">{product.uom}</TableCell>
+							<TableCell className="border text-right">{product.rate}</TableCell>
+							<TableCell className="border text-right">{product.amount}</TableCell>
+							<TableCell className="border text-right">{product.discount}</TableCell>
+							<TableCell className="border text-right">
+								<div className="grid grid-cols-3">
+									<div className="pr-1 border-r">{product.cgst}</div>
+									<div className="col-span-2 pl-1">{product.cgst * product.netAmount}</div>
+								</div>
+							</TableCell>
+							<TableCell className="border text-right">
+								<div className="grid grid-cols-3">
+									<div className="pr-1 border-r">{product.sgst}</div>
+									<div className="col-span-2 pl-1">{product.sgst * product.netAmount}</div>
+								</div>
+							</TableCell>
+							<TableCell className="border text-right">
+								<div className="grid grid-cols-3">
+									<div className="pr-1 border-r">{product.igst}</div>
+									<div className="col-span-2 pl-1">{product.igst * product.netAmount}</div>
+								</div>
+							</TableCell>
+							<TableCell className="border text-right">{product.netAmount}</TableCell>
+						</TableRow>
+					))}
+					<TableRow>
+						<TableCell colSpan={2} className="border text-left">
+							<Select onValueChange={handleSelectChange} value={products[0].name}>
+								<SelectTrigger className="w-full">
+									<SelectValue placeholder="Select product" />
+								</SelectTrigger>
+								<SelectContent>
+									<SelectItem value={'1'}>Product 1</SelectItem>
+									<SelectItem value={'2'}>Product 2</SelectItem>
+									<SelectItem value={'3'}>Product 3</SelectItem>
+								</SelectContent>
+							</Select>
+						</TableCell>
+						<TableCell className="border text-right">
+							<Input
+								type="text"
+								name="prodUom"
+								value={''}
+								onChange={handleInputChange}
+								placeholder=""
+							/>
+						</TableCell>
+						<TableCell className="border text-right">
+							<Input
+								type="text"
+								name="prodQuantity"
+								value={''}
+								onChange={handleInputChange}
+								placeholder=""
+							/>
+						</TableCell>
+						<TableCell className="border text-right">
+							<Input
+								type="text"
+								name="prodQuantity"
+								value={''}
+								onChange={handleInputChange}
+								placeholder=""
+							/>
+						</TableCell>
+						<TableCell className="border text-right"></TableCell>
+						<TableCell className="border text-right">
+							<Input
+								type="text"
+								name="prodQuantity"
+								value={''}
+								onChange={handleInputChange}
+								placeholder=""
+							/>
+						</TableCell>
+						<TableCell className="border text-right"></TableCell>
+						<TableCell colSpan={3} />
+					</TableRow>
+				</TableBody>
+				<TableFooter>
+					<TableRow>
+						<TableCell className="border text-right" colSpan={7}></TableCell>
+						<TableCell className="border text-right">20.00</TableCell>
+						<TableCell className="border text-right">20.00</TableCell>
+						<TableCell className="border text-right">20.00</TableCell>
+						<TableCell className="border text-right">2,500.00</TableCell>
+					</TableRow>
+					<TableRow className="border bg-muted font-bold">
+						<TableCell colSpan={10}>Total</TableCell>
+						<TableCell className="border text-right">2500.00</TableCell>
+					</TableRow>
+				</TableFooter>
+			</Table>
+		</Card>
+	)
+};
+
+export default POFormProductForm;

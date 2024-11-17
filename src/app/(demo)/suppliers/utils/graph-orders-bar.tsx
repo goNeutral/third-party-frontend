@@ -5,21 +5,21 @@ import { Bar, BarChart } from "recharts";
 import { type ChartConfig, ChartContainer } from "@/components/ui/chart";
 
 const chartData = [
-    { month: "January", desktop: 186, mobile: 80 },
-    { month: "February", desktop: 305, mobile: 200 },
-    { month: "March", desktop: 237, mobile: 120 },
-    { month: "April", desktop: 73, mobile: 190 },
-    { month: "May", desktop: 209, mobile: 130 },
-    { month: "June", desktop: 214, mobile: 140 },
+    { month: "January", sales: 186, purchase: 80 },
+    { month: "February", sales: 305, purchase: 200 },
+    { month: "March", sales: 237, purchase: 120 },
+    { month: "April", sales: 73, purchase: 190 },
+    { month: "May", sales: 209, purchase: 130 },
+    { month: "June", sales: 214, purchase: 140 },
 ];
 
 const chartConfig = {
-    desktop: {
-      label: "Desktop",
+    sales: {
+      label: "Sales",
       color: "#2563eb",
     },
-    mobile: {
-      label: "Mobile",
+    purchase: {
+      label: "Purchase",
       color: "#60a5fa",
     },
   } satisfies ChartConfig
@@ -28,8 +28,8 @@ const MyChart = (): JSX.Element => {
   return (
     <ChartContainer config={chartConfig} className="min-h-[200px] border border-red-400 md:col-span-3">
       <BarChart width={500} height={300} data={chartData}>
-        <Bar dataKey="desktop" fill="var(--color-desktop)" radius={4} />
-        <Bar dataKey="mobile" fill="var(--color-mobile)" radius={4} />
+        <Bar dataKey="sales" fill="var(--color-sales)" radius={4} />
+        <Bar dataKey="purchase" fill="var(--color-purchase)" radius={4} />
       </BarChart>
     </ChartContainer>
   )

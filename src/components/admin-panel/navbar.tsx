@@ -18,8 +18,8 @@ export function Navbar({ title, buttons }: NavbarProps): JSX.Element {
           <h1 className="text-xl font-semibold">{title}</h1>
         </div>
         <div className="flex gap-3 flex-1 items-center justify-end">
-          {buttons.map((button) => (
-            button
+          {buttons.map((button, index) => (
+            <div key={index}>{button}</div>
           ))}
           <ModeToggle />
           <UserNav />
