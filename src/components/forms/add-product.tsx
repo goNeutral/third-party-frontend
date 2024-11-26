@@ -3,47 +3,58 @@ import { useForm } from '@tanstack/react-form';
 import { Label } from '../ui/label';
 import { Input } from '../ui/input';
 import { Button } from '../ui/button';
-import { useMutation } from '@tanstack/react-query';
+import {createProductMutation} from "@/hooks/products";
+// import { toast } from 'sonner';
 
-const AddProductForm = (): JSX.Element => {
+
+const AddProductForm = ({setIsAddingProduct, productList}: { setIsAddingProduct: any, productList: any }): JSX.Element => {
     const [preview, setPreview] = useState<string | null>(null)
+    const {mutate:createProduct} = createProductMutation(
+        (res:any) => {
+            // toast.success("Product Created Successfully");
+            alert("Product Created Successfully");
+            productList();
+            setIsAddingProduct(false);
+        },
+        (err:any) => {
+          console.error("Product Creation Error:", err);
+        }
+    );
+    
 
+  
     const form = useForm({
+      
         defaultValues: {
             name: '',
             hsnCode: '',
-            image: undefined,
+            cgst: '',
+            sgst: '',
+            igst: '',
+            image: null,
         },
-        onSubmit: (values) => {
-            console.log(values);
-        }
     });
+    const onSubmit = () => {
+        
+        console.log("Form Values:",form.getFieldValue('name'));
+        const formData = new FormData();
+        formData.append('name', form.getFieldValue('name'));
+        formData.append('hsn', form.getFieldValue('hsnCode'));
+        formData.append('cgst', form.getFieldValue('cgst'));
+        formData.append('sgst', form.getFieldValue('sgst'));
+        formData.append('igst', form.getFieldValue('igst'));
+        formData.append('photo', form.getFieldValue('image') || '');
+        createProduct(formData);
+    }
 
-    const uploadMutation = useMutation({
-        mutationFn: async (formData: FormData) => {
-          const response = await fetch('/api/upload', {
-            method: 'POST',
-            body: formData,
-          })
-
-          if (!response.ok) {
-            const error = await response.json()
-            throw new Error(error.message || 'Upload failed')
-          }
-
-          return response.json()
-        },
-        onSuccess: () => {
-          // Invalidate and refetch relevant queries if needed
-          queryClient.invalidateQueries({ queryKey: ['uploads'] })
-        },
-      })
+   
 
     return (
         <form
             className='flex flex-col gap-4'
             onSubmit={(e) => {
                 e.preventDefault();
+                // form.handleSubmit();
                 e.stopPropagation();
             }}
         >
@@ -68,6 +79,48 @@ const AddProductForm = (): JSX.Element => {
                         <Label htmlFor='hsnCode'>HSN Code</Label>
                         <Input
                             id='hsnCode'
+                            type='text'
+                            value={field.state.value}
+                            onChange={(e) => {field.handleChange(e.target.value)}}
+                        />
+                    </div>
+                )}
+            />
+            <form.Field
+                name='cgst'
+                children={(field) => (
+                    <div className='w-full'>
+                        <Label htmlFor='cgst'>CGST</Label>
+                        <Input
+                            id='CGST'
+                            type='text'
+                            value={field.state.value}
+                            onChange={(e) => {field.handleChange(e.target.value)}}
+                        />
+                    </div>
+                )}
+            />
+            <form.Field
+                name='sgst'
+                children={(field) => (
+                    <div className='w-full'>
+                        <Label htmlFor='sgst'>SGST</Label>
+                        <Input
+                            id='SGST'
+                            type='text'
+                            value={field.state.value}
+                            onChange={(e) => {field.handleChange(e.target.value)}}
+                        />
+                    </div>
+                )}
+            />
+            <form.Field
+                name='igst'
+                children={(field) => (
+                    <div className='w-full'>
+                        <Label htmlFor='cgst'>IGST</Label>
+                        <Input
+                            id='IGST'
                             type='text'
                             value={field.state.value}
                             onChange={(e) => {field.handleChange(e.target.value)}}
@@ -130,7 +183,7 @@ const AddProductForm = (): JSX.Element => {
             )}
             <div className='w-full pt-2 flex justify-between gap-4'>
                 <Button variant="outline" className='w-1/2' onClick={form.reset}>Reset</Button>
-                <Button onClick={form.handleSubmit} className='w-1/2'>Submit</Button>
+                <Button onClick={()=>{ onSubmit()}} className='w-1/2'>Submit</Button>
             </div>
         </form>
     )

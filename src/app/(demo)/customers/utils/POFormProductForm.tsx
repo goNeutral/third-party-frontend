@@ -16,11 +16,11 @@ import { Card } from "@/components/ui/card"
 import { Table, TableBody, TableFooter, TableCaption, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Button } from "@/components/ui/button"
 import { type ProductCell } from "./CreatePOForm"
-// import { searchProductMutation } from '@/hooks/products';
+import { searchProductMutation } from '@/hooks/products';
 
 
 
-const POFormProductForm = ({ products, setProducts,productList }: { products: any; setProducts: any;productList:any }): JSX.Element => {
+const POFormProductForm = ({ products, setProducts }: { products: any; setProducts: any }): JSX.Element => {
 	const [newProduct, setNewProduct] = React.useState<any>({
 		id: 0,
 		name: "",
@@ -35,17 +35,17 @@ const POFormProductForm = ({ products, setProducts,productList }: { products: an
 		sgst: 0,
 		igst: 0
 	})
-// 	const [productList, setProductList] = useState<any>([]);
+	const [productList, setProductList] = useState<any>([]);
 
-//   const { mutate: searchProduct } = searchProductMutation(
-//     (data: any) => {
-//       setProductList(data.data);
-//       console.log(data);
-//     },
-//     (error: any) => {
-//       console.log(error);
-//     }
-//   );
+  const { mutate: searchProduct } = searchProductMutation(
+    (data: any) => {
+      setProductList(data.data);
+      console.log(data);
+    },
+    (error: any) => {
+      console.log(error);
+    }
+  );
 
   useEffect(() => {
     const fetchData = async () => {

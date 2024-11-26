@@ -23,11 +23,13 @@ import { ChevronRight, ChevronLeft } from "lucide-react";
 interface DataTableProps<TData, TValue> {
   columns: Array<ColumnDef<TData, TValue>>
   data: TData[]
+  callback?: any
 }
 
 export function DataTable<TData, TValue>({
   columns,
   data,
+  callback=(data:any)=>{}
 }: DataTableProps<TData, TValue>): React.ReactNode {
 
   const table = useReactTable({
@@ -92,6 +94,10 @@ export function DataTable<TData, TValue>({
               <TableRow
                 key={row.id}
                 data-state={row.getIsSelected() && "selected"}
+                onClick={() => {
+                  // alert("clicked")
+                  callback(row.original);
+                }}
               >
                 {row.getVisibleCells().map((cell) => (
                   <TableCell key={cell.id}>

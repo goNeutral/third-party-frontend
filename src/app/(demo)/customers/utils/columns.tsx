@@ -4,21 +4,19 @@ import { type ColumnDef } from "@tanstack/react-table";
 
 export interface Customer {
   id: string
-  customerName: string
-  registeredEntityName: string
+  name: string
+  registered_name: string
   city: string
-  gstStatus: "active" | "inactive"
-  paymentStatus: "pending" | "completed"
-  businessTillDate: string
+  gst_status: string
 }
 
 export const customerColumns: Array<ColumnDef<Customer>> = [
     {
-        accessorKey: "customerName",
+        accessorKey: "name",
         header: "Customer Name",
     },
     {
-        accessorKey: "registeredEntityName",
+        accessorKey: "registered_name",
         header: "Registered Entity Name",
     },
     {
@@ -26,15 +24,8 @@ export const customerColumns: Array<ColumnDef<Customer>> = [
         header: "City",
     },
     {
-        accessorKey: "gstStatus",
+        accessorKey: "gst_status",
         header: "GST Status",
     },
-    {
-        accessorKey: "paymentStatus",
-        header: "Payment Status",
-    },
-    {
-        accessorKey: "businessTillDate",
-        header: "Business Till Date",
-    }
+
 ]

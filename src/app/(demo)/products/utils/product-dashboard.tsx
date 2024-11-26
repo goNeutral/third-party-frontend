@@ -1,4 +1,7 @@
-import React, { useState, useRef, } from "react"
+"use strict";
+"use client";
+
+import React, { useState, useRef, useEffect} from "react"
 import Image from "next/image"
 import { Plus, Search, X, Upload } from "lucide-react"
 import { Button } from "@/components/ui/button"
@@ -23,27 +26,53 @@ import { Card } from "../../../../components/ui/card"
 import AddProductForm from "../../../../components/forms/add-product"
 import { useAtom } from "jotai"
 import { productsQueryAtom } from "./store"
+import {productListMutation,createProductMutation} from "@/hooks/products";
 
-// Placeholder data
-const initialProducts = [
-  { id: 1, name: "Laptop", hsnCode: "8471", image: "https://png.pngtree.com/png-clipart/20241009/original/pngtree-seamless-pattern-with-cute-cartoon-bottle-png-image_16254404.png" },
-  { id: 2, name: "Smartphone", hsnCode: "8517", image: "https://png.pngtree.com/png-clipart/20241009/original/pngtree-seamless-pattern-with-cute-cartoon-bottle-png-image_16254404.png" },
-  { id: 3, name: "Headphones", hsnCode: "8518", image: "https://png.pngtree.com/png-clipart/20241009/original/pngtree-seamless-pattern-with-cute-cartoon-bottle-png-image_16254404.png" },
-  { id: 4, name: "Tablet", hsnCode: "8471", image: "https://png.pngtree.com/png-clipart/20241009/original/pngtree-seamless-pattern-with-cute-cartoon-bottle-png-image_16254404.png" },
-]
+
+
 
 export function ProductDashboardComponent() {
-  const [products, setProducts] = useState(initialProducts)
+  const [products, setProducts] = useState<any>([])
   const [searchTerm, setSearchTerm] = useState("")
   const [newProduct, setNewProduct] = useState({ name: "", hsnCode: "", image: null })
   const [isAddingProduct, setIsAddingProduct] = useState(false)
-  const [editingProduct, setEditingProduct] = useState(null)
+  const [editingProduct, setEditingProduct] = useState<any>(null)
+  const [filteredProducts, setFilteredProducts] = useState<any>([])
   const editFileInputRef = useRef(null);
+  const {mutate:productList} = productListMutation(
+    (res:any) => {
+      console.log("Product List:", res);
+      setProducts(res?.data);
+      setFilteredProducts(res?.data.filter((product:any) =>
+          product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          product.hsnCode.includes(searchTerm)
+        ));
+      
+    },
+    (err:any) => {
+      console.error("Product List Error:", err);
+    }
+  );
 
-  const filteredProducts = products.filter((product) =>
-    product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    product.hsnCode.includes(searchTerm)
-  )
+  const {mutate:createProduct} = createProductMutation(
+    (res:any) => {
+      console.log("Create Product:", res);
+      
+    },
+    (err:any) => {productList();
+      console.error("Create Product Error:", err);
+    }
+  );
+
+  useEffect(() => {
+    productList();
+  }, [])
+  
+
+  // const filteredProducts = products.filter((product) =>
+  //   product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+  //   product.hsnCode.includes(searchTerm)
+  // )
 
   const handleImageUpload = (e, isEditing = false) => {
     const file = e.target.files[0]
@@ -108,49 +137,20 @@ export function ProductDashboardComponent() {
         <DialogHeader>
           <DialogTitle>Add New Product</DialogTitle>
         </DialogHeader>
-        <AddProductForm />
+        <AddProductForm setIsAddingProduct={setIsAddingProduct} productList={productList} />
       </DialogContent>
     </Dialog>
   );
 
-  function ProductsList() {
-    const [productsQuery] = useAtom(productsQueryAtom)
-
-    if (productsQuery.isLoading) return <div>Loading...</div>
-    if (productsQuery.error) return <div>Error: {productsQuery.error.message}</div>
-    if (!productsQuery.data) return <div>No products found</div>
-
-    return (
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 p-4">
-        {productsQuery.data.map((product) => (
-          <div key={product.id} className="border rounded-lg p-4 shadow-sm">
-            <img
-              src={product.image}
-              alt={product.name}
-              className="w-full h-48 object-cover rounded-md mb-4"
-            />
-            <h3 className="text-lg font-semibold mb-2">{product.name}</h3>
-            <div className="text-sm text-gray-600 space-y-1">
-              <p>HSN Code: {product.hsnCode}</p>
-              <div className="flex gap-4">
-                <p>CGST: {product.cgst}</p>
-                <p>SGST: {product.sgst}</p>
-                <p>IGST: {product.igst}</p>
-              </div>
-            </div>
-          </div>
-        ))}
-      </div>
-    )
-  }
+ 
 
   return (
     <div className="">
       <Navbar title="Product Dashboard" buttons={[AddProductButton, SearchProduct]} />
       <div className="p-5 grid gap-4 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-4">
-        <ProductsList />
-        {filteredProducts.map((product) => (
-          <Sheet key={product.id}>
+  
+        {filteredProducts.map((product:any) => (
+          <Sheet key={product?.id}>
             <SheetTrigger asChild>
               <div className="rounded-lg border bg-card text-card-foreground shadow-sm cursor-pointer hover:shadow-md transition-shadow">
                 <Card className="rounded">
@@ -158,12 +158,12 @@ export function ProductDashboardComponent() {
                     height={0}
                     width={0}
                     sizes="100vw"
-                    src={product.image} alt={product.name}
+                    src={product?.photo} alt={product?.name}
                     className="w-full h-auto rounded-t"
                   />
                   <div className="p-2">
-                    <h3 className="font-bold">{product.name}</h3>
-                    <p className="text-sm font-semibold text-gray-700">HSN Code: {product.hsnCode}</p>
+                    <h3 className="font-bold">{product?.name}</h3>
+                    <p className="text-sm font-semibold text-gray-700">HSN Code: {product?.hsn}</p>
                   </div>
                 </Card>
               </div>
@@ -177,7 +177,7 @@ export function ProductDashboardComponent() {
                   <Label htmlFor={`edit-name-${product.id}`}>Product Name</Label>
                   <Input
                     id={`edit-name-${product.id}`}
-                    value={editingProduct?.name ?? product.name}
+                    value={editingProduct?.name ?? product?.name}
                     onChange={(e) => { setEditingProduct({ ...editingProduct, name: e.target.value }); }}
                     required
                   />
@@ -186,13 +186,13 @@ export function ProductDashboardComponent() {
                   <Label htmlFor={`edit-hsnCode-${product.id}`}>HSN Code</Label>
                   <Input
                     id={`edit-hsnCode-${product.id}`}
-                    value={editingProduct?.hsnCode ?? product.hsnCode}
+                    value={editingProduct?.hsn ?? product.hsn}
                     onChange={(e) => { setEditingProduct({ ...editingProduct, hsnCode: e.target.value }); }}
                     required
                   />
                 </div>
                 <div>
-                  <Label htmlFor={`edit-image-${product.id}`}>Product Image</Label>
+                  <Label htmlFor={`edit-image-${product?.id}`}>Product Image</Label>
                   <div className="flex items-center space-x-2">
                     <Button
                       type="button"
@@ -203,7 +203,7 @@ export function ProductDashboardComponent() {
                       Change Image
                     </Button>
                     <Input
-                      id={`edit-image-${product.id}`}
+                      id={`edit-image-${product?.id}`}
                       type="file"
                       accept="image/*"
                       className="hidden"

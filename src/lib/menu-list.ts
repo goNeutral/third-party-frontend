@@ -60,6 +60,12 @@ export function getMenuList(pathname: string): Group[] {
           label: "Products",
           active: pathname.includes("/products"),
           icon: PackageSearch
+        },
+        {
+          href: "/orders",
+          label: "Orders",
+          active: pathname.includes("/orders"),
+          icon: PackageSearch
         }
       ]
     },

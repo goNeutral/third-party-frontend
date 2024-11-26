@@ -3,22 +3,21 @@
 import { type ColumnDef } from "@tanstack/react-table";
 
 export interface Supplier {
-  id: string
-  supplierName: string
-  registeredEntityName: string
-  city: string
-  gstStatus: "active" | "inactive"
-  paymentStatus: "pending" | "completed"
-  businessTillDate: string
+    id: string
+    name: string
+    registered_name: string
+    city: string
+    gst_status: string
+
 }
 
 export const supplierColumns: Array<ColumnDef<Supplier>> = [
     {
-        accessorKey: "supplierName",
+        accessorKey: "name",
         header: "Supplier Name",
     },
     {
-        accessorKey: "registeredEntityName",
+        accessorKey: "registered_name",
         header: "Registered Entity Name",
     },
     {
@@ -26,15 +25,8 @@ export const supplierColumns: Array<ColumnDef<Supplier>> = [
         header: "City",
     },
     {
-        accessorKey: "gstStatus",
+        accessorKey: "gst_status",
         header: "GST Status",
     },
-    {
-        accessorKey: "paymentStatus",
-        header: "Payment Status",
-    },
-    {
-        accessorKey: "businessTillDate",
-        header: "Business Till Date",
-    }
+  
 ]

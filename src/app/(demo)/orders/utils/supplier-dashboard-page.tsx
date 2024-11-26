@@ -3,7 +3,7 @@
 import React, { useState,useEffect } from 'react';
 import { Navbar } from '@/components/admin-panel/navbar';
 import { Button } from '@/components/ui/button';
-import { type Supplier, supplierColumns } from './columns';
+import { type Supplier, supplierColumns,salesOrderColumns ,purchaseOrderColumns} from './columns';
 import { DataTable } from '@/components/ui/data-table';
 import { Card } from '@/components/ui/card';
 import {
@@ -18,6 +18,8 @@ import AddSupplierForm from './add-supplier';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import CreatePOForm from './CreatePOForm';
 import {listSupplierMutation} from "@/hooks/suppliers"
+import { getFullSalesOrderMutation } from '@/hooks/customer';
+import { listPurchaseOrderMutation } from '@/hooks/suppliers';
 
 // function getSuppliers(): Supplier[] {
 // 	// Fetch data from your API here.
@@ -52,12 +54,24 @@ import {listSupplierMutation} from "@/hooks/suppliers"
 // 		// ...
 // 	];
 // }
+const STATUS_CHOICES = {
+    "0": 'Confirmed',
+    "1": 'Pending',
+    "2": 'Processing',
+    "3": 'Intransit',
+    "4": 'Delivered',
+    "5": 'Completed',
+    6: 'Cancelled',
+};
+
 
 const SupplierDashboardPage = (): JSX.Element => {
 	const [isAddingProduct, setIsAddingProduct] = useState(false);
 	const [isCreatingPO, setIsCreatingPO] = useState(false);
 	const [orders, setOrders] = useState<any>([]);
-
+	const [salesOrder , setSalesOrder] = useState<any>([]);
+	const [po, setPO] = useState<any>([]);
+	const [displayData, setDisplayData] = useState('');
 	const {mutate: listSupplier} = listSupplierMutation(
 	  (data:any) => {
 		setOrders(data.data);
@@ -68,10 +82,48 @@ const SupplierDashboardPage = (): JSX.Element => {
 		
 	  }
 	);
+	const {mutate: listSalesOrder} = getFullSalesOrderMutation(
+		(data:any) => {
+			const salesOrder = data.data.map((order:any) => {
+				return {
+					...order,
+					order_status: STATUS_CHOICES[order.order_status],
+					
+				};
+			});
+			setSalesOrder(salesOrder);
+			console.log(data);
+		},
+		(error:any) => {
+			console.log(error);
+			
+		}
+	  );
+
+	const {mutate: listPO} = listPurchaseOrderMutation(
+		(data:any) => {
+			const poData = data.data.map((order:any) => {
+				return {
+					...order,
+					order_status: STATUS_CHOICES[order.order_status],
+					
+				};
+			}
+			);
+			setPO(poData);
+		
+		},
+		(error:any) => {
+			console.log(error);
+			
+		}
+	  );
   
 	useEffect(() => {
 	  const fetchData = async () => {
 		 await listSupplier();
+		 await listSalesOrder();
+		 await listPO();
   
 	  };
 	  fetchData();
@@ -115,17 +167,39 @@ const SupplierDashboardPage = (): JSX.Element => {
 	return (
 		<div>
 			<Navbar
-				title='Supplier'
-				buttons={[CreatePOButton, AddSupplierButton]}
+				title='Orders'
+				// buttons={[CreatePOButton, AddSupplierButton]}
+				buttons={[]}
 			/>
-			{/* <div className="grid grid-cols-1 md:grid-cols-5 m-4 gap-4"> */}
-			{/* <ProductDashboardStats className="md:col-span-2"/> */}
-			{/* <GraphStats className=" md:col-span-3" /> */}
-			{/* <MyChart /> */}
-			{/* </div> */}
+			<Dialog open={isCreatingPO} onOpenChange={setIsCreatingPO}>
+			<DialogTrigger asChild>
+				<Button>Info</Button>
+			</DialogTrigger>
+			<DialogContent className='min-w-[95vw]'>
+				
+				<ScrollArea className='max-h-[80vh] pr-4'>
+					
+				</ScrollArea>
+			</DialogContent>
+		</Dialog>
+
+			<h1 className='p-4 text-3xl' > Sales Order </h1>
+			
 			<Card className='p-4 m-4 rounded-sm'>
 				{/* <CreatePOForm /> */}
-				<DataTable columns={supplierColumns} data={orders} />
+				<DataTable columns={salesOrderColumns} data={salesOrder} callback={(data:any)=>{
+					alert(data?.id)
+					console.log(data)
+				}} />
+			</Card>
+			<h1 className='p-4 text-3xl' > Purchase Order </h1>
+
+			<Card className='p-4 m-4 rounded-sm'>
+				{/* <CreatePOForm /> */}
+				<DataTable columns={purchaseOrderColumns} data={po} callback={(data:any)=>{
+					alert(data?.id)
+					console.log(data)
+				}} />
 			</Card>
 		</div>
 	);

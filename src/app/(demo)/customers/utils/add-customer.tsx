@@ -1,5 +1,5 @@
 'use client';
-import React, { useState } from 'react';
+import React, { useState,useEffect } from 'react';
 import { toast } from 'sonner';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -25,10 +25,21 @@ import {
 	SelectValue,
 } from '@/components/ui/select';
 
+import {createCustomerMutation} from "@/hooks/customer"
+
+import {
+	GetState,
+	GetCity,
+  } from "react-country-state-city";
+  
+
+
 const formSchema = z.object({
 	customerName: z.string(),
 	registeredEntityName: z.string(),
 	registeredAddress: z.string(),
+	phone: z.string(),
+	email:z.string(),
 	city: z.string(),
 	state: z.string(),
 	pincode: z.string(),
@@ -54,33 +65,80 @@ const formSchema = z.object({
 			(file) => file.size < 5 * 1024 * 1024,
 			'File size must be less than 5MB'
 		),
-	geotaggedImage: z
-		.instanceof(File)
-		.refine(
-			(file) => file.size < 5 * 1024 * 1024,
-			'File size must be less than 5MB'
-		),
+	// geotaggedImage: z
+	// 	.instanceof(File)
+	// 	.refine(
+	// 		(file) => file.size < 5 * 1024 * 1024,
+	// 		'File size must be less than 5MB'
+	// 	),
 });
 
 export default function AddCustomerForm() {
+	const [State, setState] = useState<any>([])
+	const [City, setCity] = useState<any>([])
+
+	useEffect(() => {
+	  async function fetchData() {
+		const data = await GetState(101);
+		console.log("ins data",data)
+		setState(data);
+	  }
+	  fetchData();
+	}, []);
+
+		
+	
+
+
+	const {mutate:createCustomer} = createCustomerMutation(
+		(res:any) => {
+			console.log("Create Customer:", res);
+			toast.success('Customer created successfully');
+		},
+		(err:any) => {
+			console.error("Create Customer Error:", err);
+			toast.error('Failed to create customer');
+		}
+	);
+
 	const form = useForm<z.infer<typeof formSchema>>({
 		resolver: zodResolver(formSchema),
 	});
+	
 
 	function onSubmit(values: z.infer<typeof formSchema>) {
 		try {
 			console.log(values);
-			toast(
-				<pre className='mt-2 w-[340px] rounded-md bg-slate-950 p-4 '>
-					<code className='text-white'>
-						{JSON.stringify(values, null, 2)}
-						{ values.gstFile instanceof File ? values.gstFile.name : '' }
-						{ values.aadharFile instanceof File ? values.gstFile.name : '' }
-						{ values.panFile instanceof File ? values.gstFile.name : '' }
-						{ values.geotaggedImage instanceof File ? values.gstFile.name : '' }
-					</code>
-				</pre>
-			);
+			const data = new FormData();
+			data.append('name', values.customerName);
+			data.append('registered_name', values.registeredEntityName);
+			data.append('address', values.registeredAddress);
+			data.append('city', values.city);
+			data.append('state', values.state);
+			data.append('pincode', values.pincode);
+			data.append('gst', values.gstNumber);
+			data.append('aadhar', values.aadharNumber);
+			data.append('pan', values.panNumber);
+			data.append('gst_status', values.gstStatus);
+			data.append('gst_file', values.gstFile);
+			data.append('aadhar_file', values.aadharFile);
+			data.append('pan_file', values.panFile);
+			data.append('phone', values.phone);
+			data.append('email', values.email);
+		
+
+			createCustomer(data);
+			// toast(
+			// 	<pre className='mt-2 w-[340px] rounded-md bg-slate-950 p-4 '>
+			// 		<code className='text-white'>
+			// 			{JSON.stringify(values, null, 2)}
+			// 			{ values.gstFile instanceof File ? values.gstFile.name : '' }
+			// 			{ values.aadharFile instanceof File ? values.gstFile.name : '' }
+			// 			{ values.panFile instanceof File ? values.gstFile.name : '' }
+			// 			{/* { values.geotaggedImage instanceof File ? values.gstFile.name : '' } */}
+			// 		</code>
+			// 	</pre>
+			// );
 			console.log(JSON.stringify(values, null, 2));
 		} catch (error) {
 			console.error('Form submission error', error);
@@ -123,7 +181,34 @@ export default function AddCustomerForm() {
 						</FormItem>
 					)}
 				/>
+								<FormField
+					control={form.control}
+					name='phone'
+					render={({ field }) => (
+						<FormItem>
+							<FormLabel>Phone No</FormLabel>
+							<FormControl>
+								<Input placeholder='' type='' {...field} />
+							</FormControl>
 
+							<FormMessage />
+						</FormItem>
+					)}
+				/>
+				<FormField
+					control={form.control}
+					name='email'
+					render={({ field }) => (
+						<FormItem>
+							<FormLabel>Email ID</FormLabel>
+							<FormControl>
+								<Input placeholder='' type='' {...field} />
+							</FormControl>
+
+							<FormMessage />
+						</FormItem>
+					)}
+				/>
 				<FormField
 					control={form.control}
 					name='registeredAddress'
@@ -133,6 +218,36 @@ export default function AddCustomerForm() {
 							<FormControl>
 								<Textarea placeholder='' {...field} />
 							</FormControl>
+
+							<FormMessage />
+						</FormItem>
+					)}
+				/>
+
+<FormField
+					control={form.control}
+					name='state'
+					render={({ field }) => (
+						<FormItem>
+							<FormLabel>State</FormLabel>
+							<Select
+								onValueChange={field.onChange}
+								defaultValue={field.value}
+							>
+								<FormControl>
+									<SelectTrigger>
+										<SelectValue placeholder='' />
+									</SelectTrigger>
+								</FormControl>
+								<SelectContent>
+									{State.map((state:any) => (
+										<SelectItem key={state.id} value={state.name}>
+											{state.name}
+										</SelectItem>
+									))}
+								
+								</SelectContent>
+							</Select>
 
 							<FormMessage />
 						</FormItem>
@@ -154,38 +269,7 @@ export default function AddCustomerForm() {
 					)}
 				/>
 
-				<FormField
-					control={form.control}
-					name='state'
-					render={({ field }) => (
-						<FormItem>
-							<FormLabel>State</FormLabel>
-							<Select
-								onValueChange={field.onChange}
-								defaultValue={field.value}
-							>
-								<FormControl>
-									<SelectTrigger>
-										<SelectValue placeholder='' />
-									</SelectTrigger>
-								</FormControl>
-								<SelectContent>
-									<SelectItem value='m@example.com'>
-										m@example.com
-									</SelectItem>
-									<SelectItem value='m@google.com'>
-										m@google.com
-									</SelectItem>
-									<SelectItem value='m@support.com'>
-										m@support.com
-									</SelectItem>
-								</SelectContent>
-							</Select>
-
-							<FormMessage />
-						</FormItem>
-					)}
-				/>
+				
 
 				<FormField
 					control={form.control}
@@ -266,14 +350,14 @@ export default function AddCustomerForm() {
 									</SelectTrigger>
 								</FormControl>
 								<SelectContent>
-									<SelectItem value='m@example.com'>
-										m@example.com
+									<SelectItem value='Verified'>
+										Verifed
 									</SelectItem>
-									<SelectItem value='m@google.com'>
-										m@google.com
+									<SelectItem value='Canceled'>
+										Canceled
 									</SelectItem>
-									<SelectItem value='m@support.com'>
-										m@support.com
+									<SelectItem value='Pending'>
+										Pending
 									</SelectItem>
 								</SelectContent>
 							</Select>
@@ -365,7 +449,7 @@ export default function AddCustomerForm() {
 							);
 						}}
 					/>
-					<FormField
+					{/* <FormField
 						control={form.control}
 						name='geotaggedImage'
 						render={({ field: { value, onChange, ...fieldProps } }) => {
@@ -391,7 +475,7 @@ export default function AddCustomerForm() {
 
 							);
 						}}
-					/>
+					/> */}
 				</div>
 				<Button type='submit'>Submit</Button>
 			</form>

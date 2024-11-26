@@ -1,6 +1,6 @@
 // "use client"
 
-import React, { useState } from "react";
+import React, { useState,useEffect } from "react";
 import { Navbar } from "@/components/admin-panel/navbar";
 import { Button } from "@/components/ui/button";
 import { type Customer, customerColumns } from "./columns";
@@ -10,6 +10,10 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Plus } from "lucide-react";
 import AddCustomerForm from "./add-customer";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import {listCustomerMutation} from "@/hooks/customer"
+import CreatePOForm from "./CreatePOForm";
+
+
 
 function getCustomers(): Customer[] {
     // Fetch data from your API here.
@@ -49,8 +53,31 @@ function getCustomers(): Customer[] {
 
 const CustomerDashboardPage = (): JSX.Element => {
   const [isAddingProduct, setIsAddingProduct] = useState(false);
+	const [isCreatingPO, setIsCreatingPO] = useState(false);
 
-  const orders = getCustomers();
+  const [orders, setOrders] = useState<any>([]);
+
+  const {mutate: listCustomer} = listCustomerMutation(
+    (data:any) => {
+      setOrders(data.data);
+      console.log(data);
+    },
+    (error:any) => {
+      console.log(error);
+      
+    }
+  );
+
+  useEffect(() => {
+    const fetchData = async () => {
+       await listCustomer();
+
+    };
+    fetchData();
+  }
+  , []);
+
+  // const orders = getCustomers();
 
     const AddSupplierButton = (
       <Dialog open={isAddingProduct} onOpenChange={setIsAddingProduct}>
@@ -72,16 +99,24 @@ const CustomerDashboardPage = (): JSX.Element => {
     );
 
     const CreatePOButton = (
-        <Button>Create PO</Button>
+      <Dialog open={isCreatingPO} onOpenChange={setIsCreatingPO}>
+			<DialogTrigger asChild>
+				<Button>Create SO</Button>
+			</DialogTrigger>
+			<DialogContent className='min-w-[95vw]'>
+				<DialogHeader>
+					<DialogTitle>Create Sales Order</DialogTitle>
+				</DialogHeader>
+				<ScrollArea className='max-h-[80vh] pr-4'>
+					<CreatePOForm />
+				</ScrollArea>
+			</DialogContent>
+		</Dialog>
     )
     return (
       <div>
-        <Navbar title="Supplier" buttons={[CreatePOButton, AddSupplierButton]} />
-        {/* <div className="grid grid-cols-1 md:grid-cols-5 m-4 gap-4"> */}
-            {/* <ProductDashboardStats className="md:col-span-2"/> */}
-            {/* <GraphStats className=" md:col-span-3" /> */}
-            {/* <MyChart /> */}
-        {/* </div> */}
+        <Navbar title="Customer" buttons={[CreatePOButton, AddSupplierButton]} />
+      
         <Card className="p-4 m-4 rounded-sm">
             <DataTable columns={customerColumns} data={orders} />
         </Card>

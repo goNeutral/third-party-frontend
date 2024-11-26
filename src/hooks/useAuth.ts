@@ -5,14 +5,35 @@ import { useQuery, useMutation } from '@tanstack/react-query';
 import { useSetAtom, useAtomValue } from 'jotai';
 import { userAuthAtom as authState } from "@/store/auth";
 import { authService } from "@/utils/auth";
+import {request,getUrl} from "@/utils/network";
 
-type useAuthState = {
-    user: any;
-    isAuthenticated: boolean;
-    loading: boolean;
-    login: any;
-    logout: () => void;
+
+const googleAuthRequset = (data:any) :Promise<any>  =>{
+  console.log(data);
+
+  const url = getUrl('/auth/google');
+  console.log(url);
+  return request(url, data, 'POST');
+
 }
+
+export const googleMutation = (
+  successCallback: (res: any) => void,
+  errorCallback: (err: any) => void
+): ReturnType<typeof useMutation> => {
+  return useMutation<Promise<any>, any, any, unknown>({
+    mutationFn: googleAuthRequset,
+ 
+    onSuccess: (res: any) => {
+      successCallback(res);
+    },
+    onError: (err: any) => {
+      errorCallback(err);
+    },
+  });
+}
+
+
 
 const useAuth = (): useAuthState => {
   const setAuth = useSetAtom(authState)

@@ -1,6 +1,6 @@
 'use client';
 import React, { useState, useEffect } from 'react';
-// import { toast } from 'sonner';
+import { toast } from 'sonner';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
@@ -25,13 +25,12 @@ import { Separator } from '@/components/ui/separator';
 import { Textarea } from '@/components/ui/textarea';
 
 import POFormProductForm from './POFormProductForm';
-import { searchSupplierMutation,createPurchaseOrderMutation } from '@/hooks/suppliers';
-import { toast } from 'sonner';
-import { getSOProductMutation } from '@/hooks/products';
+import { searchCustomerMutation } from '@/hooks/customer';
+import { createSalesOrderMutation } from '@/hooks/customer';
 
 const formSchema = z.object({
 	supplier: z.string(),
-	so_id: z.string(),
+	shipTo: z.string(),
 	deliveryTerms: z.number(),
 	paymentTerms: z.number(),
 	deliveryMode: z.string(),
@@ -57,21 +56,10 @@ export interface ProductCell {
 
 export default function CreatePOForm(): JSX.Element {
 	const [products, setProducts] = useState<ProductCell[]>([]);
-	const [productList, setProductList] = useState([]);
 
-	const { mutate: createSalesOrder } = createPurchaseOrderMutation(
+	const { mutate: createSalesOrder } = createSalesOrderMutation(
 		(data: any) => {
 			console.log(data);
-			toast('Sales Order created successfully');
-		},
-		(error: any) => {
-			console.log(error);
-		}
-	);
-	const { mutate: getSOProduct } = getSOProductMutation(
-		(data: any) => {
-			setProductList(data.data);
-
 		},
 		(error: any) => {
 			console.log(error);
@@ -91,7 +79,7 @@ export default function CreatePOForm(): JSX.Element {
 		try {
 			console.log('Form submitted', values);
 
-			
+			toast.success('Form submitted successfully	');
 			const productsData = products.map((product) => ({
 				product: product.id,
 				quantity: product.quantity,
@@ -99,13 +87,13 @@ export default function CreatePOForm(): JSX.Element {
 				unit: product.unit,
 			}));
 			const cust = customerList.find(
-				(customer: any) => customer.name === values.supplier
-			);
+				(customer: any) => customer.name === values.shipTo
+				);
 			console.log(cust);
 			const salesData = {
-				supplier: cust?.id,
+				customer: cust?.id,
 				// order_dte in yyyy-mm-dd format
-				sales_order: values.so_id,
+
 				order_date: new Date().toISOString().split('T')[0],
 				total_amount: products.reduce(
 					(acc, product) => acc + product.netAmount,
@@ -117,27 +105,15 @@ export default function CreatePOForm(): JSX.Element {
 			};
 			createSalesOrder({
 				products: productsData,
-				purchase_order: salesData,
+				sales_order: salesData,
 			});
 		} catch (error) {
 			console.error('Form submission error', error);
-			toast('Failed to submit the form. Please try again.');
+			toast.error('Failed to submit the form. Please try again.');
 		}
 	}
-	// useEffect(() => {
-	const getData = async () => {
-		await getSOProduct(form.getValues().so_id);
-	};
-
-	// const fetchData = async () => {
-	// 	await getSOProduct(form.getValues().so_id);
-	// };
-
-	// 	fetchData();
-
-	// }, [form.getFieldState('so_id')]);
 	const [customerList, setCustomerList] = useState([]);
-	const { mutate: searchCustomer } = searchSupplierMutation(
+	const { mutate: searchCustomer } = searchCustomerMutation(
 		(data: any) => {
 			setCustomerList(data.data);
 			console.log(data);
@@ -163,42 +139,17 @@ export default function CreatePOForm(): JSX.Element {
 				>
 					<FormField
 						control={form.control}
-						name='so_id'
+						name='shipTo'
 						render={({ field }) => (
 							<FormItem>
-								<FormLabel>Sales Order</FormLabel>
-								<FormControl 
-								onChange={(e) => {
-									field.onChange(e);
-									getData();
-								}
-								}
-								>
-									{/* <FormControl> */}
-										<Input
-											placeholder=''
-											type='number'
-											{...field}
-										/>
-									{/* </FormControl> */}
-								</FormControl>
-								<FormMessage />
-							</FormItem>
-						)}
-					/>
-					<FormField
-						control={form.control}
-						name='supplier'
-						render={({ field }) => (
-							<FormItem>
-								<FormLabel>Supplier</FormLabel>
+								<FormLabel>Ship To</FormLabel>
 								<Select
 									onValueChange={field.onChange}
 									defaultValue={field.value}
 								>
 									<FormControl>
 										<SelectTrigger>
-											<SelectValue placeholder='Select Supplier' />
+											<SelectValue placeholder='Select customer' />
 										</SelectTrigger>
 									</FormControl>
 									<SelectContent>
@@ -284,7 +235,6 @@ export default function CreatePOForm(): JSX.Element {
 					<POFormProductForm
 						products={products}
 						setProducts={setProducts}
-						productList={productList}
 					/>
 					<FormField
 						name='termsAndConditions'
@@ -330,13 +280,9 @@ export default function CreatePOForm(): JSX.Element {
 							</FormItem>
 						)}
 					/>
-					<Button
-						className='col-span-3'
-						onClick={() => {
-							onSubmit(form.getValues());
-						}}
-						type='submit'
-					>
+					<Button className='col-span-3' onClick={()=>{
+						onSubmit(form.getValues())
+					}} type='submit'>
 						Submit
 					</Button>
 				</form>

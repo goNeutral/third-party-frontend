@@ -1,30 +1,69 @@
 "use client";
 
-import React from 'react';
-import { useAuth } from '../hooks/useAuth';
+import React from "react";
+import { GoogleOAuthProvider, GoogleLogin } from "@react-oauth/google";
+// import { googleMutation } from "@/hooks/useAuth";
+import {gLoginMutation} from "@/hooks/auth";
+import { useAtom } from "jotai";
+import { userAuthAtom } from "@/store/auth";
 
-const Login = (): JSX.Element => {
-  const { login, isAuthenticated, user } = useAuth();
 
-  if (isAuthenticated) {
-    return (
-      <div>
-        <p>Welcome, {user?.name}</p>
-        <p>Role: {user?.role}</p>
-      </div>
-    );
+const GoogleLoginComponent = () => {
+
+
+  const [authState, setAuthState] = useAtom(userAuthAtom);
+
+
+  const { mutate:googleAuth } = gLoginMutation(
+    (res:any) => {
+      console.log("Google Login Successful:", res);
+      setAuthState({
+        isAuthenticated: true,
+        user: res?.data?.user,
+        loading: false,
+        token: res?.data?.access,
+      });
+      
+    },
+    (err:any) => {
+      console.error("Google Login Error:", err);
+
+    }
+  );
+  interface GoogleLoginResponse {
+    credential: string;
   }
 
+  const handleLoginSuccess = (response: GoogleLoginResponse) => {
+    
+    googleAuth({ token: response.credential });
+    
+  };
+
+  const handleLoginFailure = (error:any) => {
+    console.error("Login Failed:", error);
+    // alert("Google Login failed. Please try again.");
+  };
+
   return (
-    <div className='p-10 w-full flex justify-center'>
-      <button
-        onClick={() => login()}
-        className="p-2 w-fit bg-blue-500 text-white rounded"
-      >
-        Sign in with Google
-      </button>
+    <div>
+      <h1>Login with Google</h1>
+      <GoogleLogin
+        onSuccess={handleLoginSuccess}
+        onError={handleLoginFailure}
+        theme="outline"
+        size="large"
+      />
     </div>
   );
-}
+};
 
-export default Login;
+const App = () => {
+  return (
+    <>
+      <GoogleLoginComponent />
+    </>
+  );
+};
+
+export default App;
