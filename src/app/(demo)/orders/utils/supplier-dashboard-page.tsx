@@ -1,9 +1,14 @@
 // "use client"
 
-import React, { useState,useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Navbar } from '@/components/admin-panel/navbar';
 import { Button } from '@/components/ui/button';
-import { type Supplier, supplierColumns,salesOrderColumns ,purchaseOrderColumns} from './columns';
+import {
+	type Supplier,
+	supplierColumns,
+	salesOrderColumns,
+	purchaseOrderColumns,
+} from './columns';
 import { DataTable } from '@/components/ui/data-table';
 import { Card } from '@/components/ui/card';
 import {
@@ -17,9 +22,11 @@ import { Plus } from 'lucide-react';
 import AddSupplierForm from './add-supplier';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import CreatePOForm from './CreatePOForm';
-import {listSupplierMutation} from "@/hooks/suppliers"
+import CreateSOForm from './CreateSOForm';
+import { listSupplierMutation } from '@/hooks/suppliers';
 import { getFullSalesOrderMutation } from '@/hooks/customer';
 import { listPurchaseOrderMutation } from '@/hooks/suppliers';
+import { set } from 'date-fns';
 
 // function getSuppliers(): Supplier[] {
 // 	// Fetch data from your API here.
@@ -55,80 +62,71 @@ import { listPurchaseOrderMutation } from '@/hooks/suppliers';
 // 	];
 // }
 const STATUS_CHOICES = {
-    "0": 'Confirmed',
-    "1": 'Pending',
-    "2": 'Processing',
-    "3": 'Intransit',
-    "4": 'Delivered',
-    "5": 'Completed',
-    6: 'Cancelled',
+	'0': 'Confirmed',
+	'1': 'Pending',
+	'2': 'Processing',
+	'3': 'Intransit',
+	'4': 'Delivered',
+	'5': 'Completed',
+	'6': 'Cancelled',
 };
-
 
 const SupplierDashboardPage = (): JSX.Element => {
 	const [isAddingProduct, setIsAddingProduct] = useState(false);
-	const [isCreatingPO, setIsCreatingPO] = useState(false);
+	const [isCreatingPO, setOpen] = useState(false);
 	const [orders, setOrders] = useState<any>([]);
-	const [salesOrder , setSalesOrder] = useState<any>([]);
+	const [salesOrder, setSalesOrder] = useState<any>([]);
 	const [po, setPO] = useState<any>([]);
 	const [displayData, setDisplayData] = useState('');
-	const {mutate: listSupplier} = listSupplierMutation(
-	  (data:any) => {
-		setOrders(data.data);
-		console.log(data);
-	  },
-	  (error:any) => {
-		console.log(error);
-		
-	  }
+	const [isCreatingSO, setIsCreatingSO] = useState(false);
+	const { mutate: listSupplier } = listSupplierMutation(
+		(data: any) => {
+			setOrders(data.data);
+			console.log(data);
+		},
+		(error: any) => {
+			console.log(error);
+		}
 	);
-	const {mutate: listSalesOrder} = getFullSalesOrderMutation(
-		(data:any) => {
-			const salesOrder = data.data.map((order:any) => {
+	const { mutate: listSalesOrder } = getFullSalesOrderMutation(
+		(data: any) => {
+			const salesOrder = data.data.map((order: any) => {
 				return {
 					...order,
 					order_status: STATUS_CHOICES[order.order_status],
-					
 				};
 			});
 			setSalesOrder(salesOrder);
 			console.log(data);
 		},
-		(error:any) => {
+		(error: any) => {
 			console.log(error);
-			
 		}
-	  );
+	);
 
-	const {mutate: listPO} = listPurchaseOrderMutation(
-		(data:any) => {
-			const poData = data.data.map((order:any) => {
+	const { mutate: listPO } = listPurchaseOrderMutation(
+		(data: any) => {
+			const poData = data.data.map((order: any) => {
 				return {
 					...order,
 					order_status: STATUS_CHOICES[order.order_status],
-					
 				};
-			}
-			);
+			});
 			setPO(poData);
-		
 		},
-		(error:any) => {
+		(error: any) => {
 			console.log(error);
-			
 		}
-	  );
-  
+	);
+
 	useEffect(() => {
-	  const fetchData = async () => {
-		 await listSupplier();
-		 await listSalesOrder();
-		 await listPO();
-  
-	  };
-	  fetchData();
-	}
-	, []);
+		const fetchData = async () => {
+			await listSupplier();
+			await listSalesOrder();
+			await listPO();
+		};
+		fetchData();
+	}, []);
 
 	const AddSupplierButton = (
 		<Dialog open={isAddingProduct} onOpenChange={setIsAddingProduct}>
@@ -150,7 +148,7 @@ const SupplierDashboardPage = (): JSX.Element => {
 	);
 
 	const CreatePOButton = (
-		<Dialog open={isCreatingPO} onOpenChange={setIsCreatingPO}>
+		<Dialog open={isCreatingPO} onOpenChange={setOpen}>
 			<DialogTrigger asChild>
 				<Button>Create PO</Button>
 			</DialogTrigger>
@@ -171,35 +169,50 @@ const SupplierDashboardPage = (): JSX.Element => {
 				// buttons={[CreatePOButton, AddSupplierButton]}
 				buttons={[]}
 			/>
-			<Dialog open={isCreatingPO} onOpenChange={setIsCreatingPO}>
-			<DialogTrigger asChild>
-				<Button>Info</Button>
-			</DialogTrigger>
-			<DialogContent className='min-w-[95vw]'>
-				
-				<ScrollArea className='max-h-[80vh] pr-4'>
-					
-				</ScrollArea>
-			</DialogContent>
-		</Dialog>
+			<Dialog open={isCreatingPO} onOpenChange={setOpen}>
+				<DialogTrigger asChild>
+					<Button>Info</Button>
+				</DialogTrigger>
+				<DialogContent className='min-w-[95vw]'>
+					<ScrollArea className='max-h-[80vh] pr-4'>
+					{ isCreatingSO ? <> <CreateSOForm data={displayData} listPO={listSalesOrder} /> </> : <><CreatePOForm data={displayData} listPO={listPO} /></>}
+					</ScrollArea>
+				</DialogContent>
+			</Dialog>
 
-			<h1 className='p-4 text-3xl' > Sales Order </h1>
-			
+			<h1 className='p-4 text-3xl'> Sales Order </h1>
+
 			<Card className='p-4 m-4 rounded-sm'>
 				{/* <CreatePOForm /> */}
-				<DataTable columns={salesOrderColumns} data={salesOrder} callback={(data:any)=>{
-					alert(data?.id)
-					console.log(data)
-				}} />
+				<DataTable
+					columns={salesOrderColumns}
+					data={salesOrder}
+					callback={(data: any) => {
+						// alert(data?.id);
+						console.log(data);
+						setDisplayData(data);
+						console.log(data);
+						setOpen(true);
+						setIsCreatingSO(true);
+
+					}}
+				/>
 			</Card>
-			<h1 className='p-4 text-3xl' > Purchase Order </h1>
+			<h1 className='p-4 text-3xl'> Purchase Order </h1>
 
 			<Card className='p-4 m-4 rounded-sm'>
 				{/* <CreatePOForm /> */}
-				<DataTable columns={purchaseOrderColumns} data={po} callback={(data:any)=>{
-					alert(data?.id)
-					console.log(data)
-				}} />
+				<DataTable
+					columns={purchaseOrderColumns}
+					data={po}
+					callback={(data: any) => {
+						// alert(data?.id);
+						setDisplayData(data);
+						console.log(data);
+						setOpen(true);
+						setIsCreatingSO(false);
+					}}
+				/>
 			</Card>
 		</div>
 	);

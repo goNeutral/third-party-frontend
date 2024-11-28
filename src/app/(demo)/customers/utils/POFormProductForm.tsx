@@ -194,13 +194,35 @@ const POFormProductForm = ({ products, setProducts }: { products: any; setProduc
 							/>
 						</TableCell>
 						<TableCell className="border text-right">
-							<Input
+							{/* <Input
 								type="text"
 								name="unit"
 								value={newProduct.unit}
 								onChange={handleInputChange}
 								placeholder="unit"
-							/>
+							/> */}
+							<Select onValueChange={(data)=>{
+								setNewProduct((prev:any) => ({
+									...prev,
+									unit: data
+								}))
+							}} value={newProduct.unit}>
+								<SelectTrigger className="w-full">
+									<SelectValue placeholder="Unit" />
+								</SelectTrigger>
+								<SelectContent   >
+									
+										<SelectItem  value="kg">
+											kg
+										</SelectItem>
+										<SelectItem  value="ton">
+											ton
+										</SelectItem><SelectItem  value="pcs">
+											pcs
+										</SelectItem>
+									
+								</SelectContent>
+							</Select>
 						</TableCell>
 						<TableCell className="border text-right">
 							<Input

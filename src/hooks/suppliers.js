@@ -93,3 +93,37 @@ export const listPurchaseOrderMutation = (successCallback, errorCallback) => {
         },
     });
 }
+
+const updatePurchaseOrderRequest = (data) => {
+    const url = getUrl('/api/orders/update_status_purchase_order/');
+    return request('POST', url, data, true);
+}
+
+export const updatePurchaseOrderMutation = (successCallback, errorCallback) => {
+    return useMutation({
+        mutationFn: updatePurchaseOrderRequest,
+        onSuccess: (res) => {
+            successCallback(res);
+        },
+        onError: (err) => {
+            errorCallback(err);
+        },
+    });
+}
+
+const updateSalesOrderRequest = (data) => {
+    const url = getUrl('/api/orders/update_status_sales_order/');
+    return request('POST', url, data, true);
+}
+
+export const updateSalesOrderMutation = (successCallback, errorCallback) => {
+    return useMutation({
+        mutationFn: updateSalesOrderRequest,
+        onSuccess: (res) => {
+            successCallback(res);
+        },
+        onError: (err) => {
+            errorCallback(err);
+        },
+    });
+}

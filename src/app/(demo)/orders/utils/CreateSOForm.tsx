@@ -26,13 +26,13 @@ import { Textarea } from '@/components/ui/textarea';
 
 import POFormProductForm from './POFormProductForm';
 import {
-	searchSupplierMutation,
-	createPurchaseOrderMutation,
+	
+	updateSalesOrderMutation
 } from '@/hooks/suppliers';
 import { toast } from 'sonner';
 import { getSOProductMutation } from '@/hooks/products';
-import { updatePurchaseOrderMutation } from '@/hooks/suppliers';
-import { updateSalesOrderMutation } from '@/hooks/suppliers';
+// import { updateSalesOrderMutation } from '@/hooks/suppliers';
+
 
 const SHIPMENT_STATUS_CHOICES = [
 	{ label: 'Confirmed', value: 0 },
@@ -46,13 +46,18 @@ const SHIPMENT_STATUS_CHOICES = [
 
 const formSchema = z.object({
 	supplier: z.string(),
-	so_id: z.string(),
+	customer: z.string(),
+	shipTo: z.string(),
 	deliveryTerms: z.number(),
 	paymentTerms: z.number(),
 	deliveryMode: z.string(),
 	termsAndConditions: z.string(),
 	remarks: z.string(),
 	comments: z.string(),
+
+
+	so_id: z.string(),
+	
 	status: z.string(),
 });
 
@@ -71,13 +76,13 @@ export interface ProductCell {
 	igst: number;
 }
 
-export default function CreatePOForm(data: any, listPO: any): JSX.Element {
+export default function CreateSOForm(data: any, listPO: any): JSX.Element {
 	const [products, setProducts] = useState<ProductCell[]>([]);
 	const [productList, setProductList] = useState([]);
-	console.log(data.data.purchased_items);
+	console.log(data.data);
 
 	useEffect(() => {
-		const productsData = data.data.purchased_items.map((product: any) => ({
+		const productsData = data.data.order_items.map((product: any) => ({
 			id: product.id,
 			name: product.product.name,
 			hsnCode: product.product.hsn,
@@ -98,11 +103,11 @@ export default function CreatePOForm(data: any, listPO: any): JSX.Element {
 			igst: parseFloat(product.product.igst),
 		}));
 		setProducts(productsData);
-	}, [data.data.purchased_items]);
+	}, [data.data.order_items]);
 
 
 
-	const { mutate: updatePurchaseOrder} = updatePurchaseOrderMutation(
+	const { mutate: updateSalesOrder} = updateSalesOrderMutation(
 		(data: any) => {
 			
 			toast('Purchase Order updated successfully');
@@ -123,11 +128,11 @@ export default function CreatePOForm(data: any, listPO: any): JSX.Element {
 				(status) => status.label === values.status
 			);
 			const data_send = {
-				order_id :  data.data.id,
+				order_id :  data.data?.id,
 				status: status?.value,
 				
 			};
-			updatePurchaseOrder(data_send);
+			updateSalesOrder(data_send);
 		} catch (error) {
 			console.error('Form submission error', error);
 			toast('Failed to submit the form. Please try again.');
@@ -150,7 +155,7 @@ export default function CreatePOForm(data: any, listPO: any): JSX.Element {
 					// onSubmit={form.handleSubmit(onSubmit)}
 					className='p-2 grid grid-cols-3 gap-2 '
 				>
-					<FormField
+					{/* <FormField
 						control={form.control}
 						name='so_id'
 						render={({ field }) => (
@@ -159,44 +164,44 @@ export default function CreatePOForm(data: any, listPO: any): JSX.Element {
 								<FormControl
 									onChange={(e) => {
 										field.onChange(e);
-										// getData();
+									
 									}}
 								>
-									{/* <FormControl> */}
+							
 									<Input
 										placeholder=''
 										type='string'
 										disabled={true}
-										defaultValue={data.data.sales_order}
-										// {...field}
+										defaultValue={data.data?.sales_order}
+									
 									/>
-									{/* </FormControl> */}
+								
 								</FormControl>
 								<FormMessage />
 							</FormItem>
 						)}
-					/>
+					/> */}
 					<FormField
 						control={form.control}
-						name='supplier'
+						name='customer'
 						render={({ field }) => (
 							<FormItem>
-								<FormLabel>Supplier</FormLabel>
+								<FormLabel>Customer</FormLabel>
 								<FormControl
 									onChange={(e) => {
 										field.onChange(e);
 										// getData();
 									}}
 								>
-									{/* <FormControl> */}
+								
 									<Input
 										placeholder=''
 										type='string'
 										disabled={true}
-										defaultValue={data.data.supplier}
-										// {...field}
+										defaultValue={data.data?.customer}
+									
 									/>
-									{/* </FormControl> */}
+									
 								</FormControl>
 								<FormMessage />
 							</FormItem>
@@ -284,7 +289,7 @@ export default function CreatePOForm(data: any, listPO: any): JSX.Element {
 										rows={8}
 										className='w-full p-2 border rounded'
 										disabled={true}
-										defaultValue={data.data.terms}
+										defaultValue={data.data?.terms}
 									/>
 								</FormControl>
 								<FormMessage />
@@ -303,7 +308,7 @@ export default function CreatePOForm(data: any, listPO: any): JSX.Element {
 										type=''
 										{...field}
 										disabled={true}
-										defaultValue={data.data.remarks}
+										defaultValue={data.data?.remarks}
 									/>
 								</FormControl>
 								<FormMessage />
@@ -322,7 +327,7 @@ export default function CreatePOForm(data: any, listPO: any): JSX.Element {
 										type=''
 										{...field}
 										disabled={true}
-										defaultValue={data.data.comment}
+										defaultValue={data.data?.coment}
 									/>
 								</FormControl>
 								<FormMessage />
@@ -337,7 +342,7 @@ export default function CreatePOForm(data: any, listPO: any): JSX.Element {
 								<FormLabel>Status</FormLabel>
 								<Select
 									onValueChange={field.onChange}
-									defaultValue={data.data.order_status}
+									defaultValue={data.data?.order_status}
 								>
 									<FormControl>
 										<SelectTrigger>

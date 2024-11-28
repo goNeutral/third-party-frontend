@@ -47,12 +47,12 @@ const POFormProductForm = ({ products, setProducts,productList }: { products: an
 //     }
 //   );
 
-  useEffect(() => {
-    const fetchData = async () => {
-      await searchProduct(null);
-    };
-    fetchData();
-  } ,[]);
+//   useEffect(() => {
+//     const fetchData = async () => {
+//       await searchProduct(null);
+//     };
+//     fetchData();
+//   } ,[]);
 
 	const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
 		const { name, value } = e.target
@@ -79,30 +79,30 @@ const POFormProductForm = ({ products, setProducts,productList }: { products: an
 		}))
 	}
 
-	const handleSubmit = (e: React.FormEvent): void => {
-		e.preventDefault()
-		setProducts((prev) => [...prev, newProduct])
-		setNewProduct({
-			id: 0,
-			name: "",
-			hsn: "",
-			quantity: 0,
-			unit: "",
-			rate: 0,
-			amount: 0,
-			discount: 0,
-			netAmount: 0,
-			cgst: 0,
-			sgst: 0,
-			igst: 0
-		})
-	}
+	// const handleSubmit = (e: React.FormEvent): void => {
+	// 	e.preventDefault()
+	// 	setProducts((prev) => [...prev, newProduct])
+	// 	setNewProduct({
+	// 		id: 0,
+	// 		name: "",
+	// 		hsn: "",
+	// 		quantity: 0,
+	// 		unit: "",
+	// 		rate: 0,
+	// 		amount: 0,
+	// 		discount: 0,
+	// 		netAmount: 0,
+	// 		cgst: 0,
+	// 		sgst: 0,
+	// 		igst: 0
+	// 	})
+	// }
 
 	return (
 		<Card className="rounded-sm p-2 col-span-3">
 			<Table className="border border-collapse">
 				<TableCaption>
-					<Button onClick={handleSubmit} >Add Product</Button>
+					{/* <Button onClick={handleSubmit} >Add Product</Button> */}
 				</TableCaption>
 				<TableHeader className="bg-accent">
 					<TableRow>
@@ -168,64 +168,9 @@ const POFormProductForm = ({ products, setProducts,productList }: { products: an
 							<TableCell className="border text-right">{product.netAmount}</TableCell>
 						</TableRow>
 					))}
-					<TableRow>
-						<TableCell colSpan={2} className="border text-left">
-							<Select onValueChange={handleSelectChange} value={newProduct.name}>
-								<SelectTrigger className="w-full">
-									<SelectValue placeholder="Select product" />
-								</SelectTrigger>
-								<SelectContent   >
-									{productList.map((product: any) => (
-										<SelectItem key={product.id} value={product.name}>
-											{product.name}
-										</SelectItem>
-									))}
-								</SelectContent>
-							</Select>
-						</TableCell>
-						
-						<TableCell className="border text-right">
-							<Input
-								type="text"
-								name="quantity"
-								value={newProduct.quantity}
-								onChange={handleInputChange}
-								placeholder="quantity"
-							/>
-						</TableCell>
-						<TableCell className="border text-right">
-							<Input
-								type="text"
-								name="unit"
-								value={newProduct.unit}
-								onChange={handleInputChange}
-								placeholder="unit"
-							/>
-						</TableCell>
-						<TableCell className="border text-right">
-							<Input
-								type="text"
-								name="rate"
-								value={newProduct.rate}
-								onChange={handleInputChange}
-								placeholder=""
-							/>
-						</TableCell>
-						<TableCell className="border text-right"></TableCell>
-						<TableCell className="border text-right">
-							<Input
-								type="text"
-								name="discount"
-								value={newProduct.discount}
-								onChange={handleInputChange}
-								placeholder="discount percentage"
-							/>
-						</TableCell>
-						<TableCell className="border text-right"></TableCell>
-						<TableCell colSpan={3} />
-					</TableRow>
+		
 				</TableBody>
-				<TableFooter>
+				{/* <TableFooter>
 					<TableRow>
 						<TableCell className="border text-right" colSpan={7}></TableCell>
 						<TableCell className="border text-right">20.00</TableCell>
@@ -237,7 +182,7 @@ const POFormProductForm = ({ products, setProducts,productList }: { products: an
 						<TableCell colSpan={10}>Total</TableCell>
 						<TableCell className="border text-right">2500.00</TableCell>
 					</TableRow>
-				</TableFooter>
+				</TableFooter> */}
 			</Table>
 		</Card>
 	)

@@ -93,3 +93,19 @@ export const getFullSalesOrderMutation = (successCallback, errorCallback) => {
         },
     });
 }
+const updateSalesOrderRequest = (data) => {
+    const url = getUrl('/api/orders/update_status_sales_order/');
+    return request('POST', url, data, true);
+}
+
+export const updateSalesOrderMutation = (successCallback, errorCallback) => {
+    return useMutation({
+        mutationFn: updateSalesOrderRequest,
+        onSuccess: (res) => {
+            successCallback(res);
+        },
+        onError: (err) => {
+            errorCallback(err);
+        },
+    });
+}
