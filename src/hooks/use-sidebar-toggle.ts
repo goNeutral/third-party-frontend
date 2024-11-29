@@ -1,22 +1,26 @@
-import { create } from 'zustand';
-import { persist, createJSONStorage } from 'zustand/middleware';
+// import { create } from 'zustand';
+// import { persist, createJSONStorage } from 'zustand/middleware';
+import { atom } from 'jotai';
 
-interface useSidebarToggleStore {
-  isOpen: boolean;
-  setIsOpen: () => void;
-}
+// interface useSidebarToggleStore {
+//   isOpen: boolean;
+//   setIsOpen: () => void;
+// }
 
-export const useSidebarToggle = create(
-  persist<useSidebarToggleStore>(
-    (set, get) => ({
-      isOpen: true,
-      setIsOpen: () => {
-        set({ isOpen: !get().isOpen });
-      }
-    }),
-    {
-      name: 'sidebarOpen',
-      storage: createJSONStorage(() => localStorage)
-    }
-  )
-);
+// export const useSidebarToggle = create(
+//   persist<useSidebarToggleStore>(
+//     (set, get) => ({
+//       isOpen: true,
+//       setIsOpen: () => {
+//         set({ isOpen: !get().isOpen });
+//       }
+//     }),
+//     {
+//       name: 'sidebarOpen',
+//       storage: createJSONStorage(() => localStorage)
+//     }
+//   )
+// );
+
+
+export const sidebarToggleAtom = atom(true);

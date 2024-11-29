@@ -1,76 +1,71 @@
 import {
-  Tag,
   Users,
   Settings,
-  Bookmark,
-  SquarePen,
-  LayoutGrid,
-  LucideIcon
+  ShoppingCart,
+  PackageSearch,
+  Truck,
+  type LucideIcon
 } from "lucide-react";
 
-type Submenu = {
+interface Submenu {
   href: string;
   label: string;
   active?: boolean;
-};
+}
 
-type Menu = {
+interface Menu {
   href: string;
   label: string;
   active: boolean;
   icon: LucideIcon;
   submenus?: Submenu[];
-};
+}
 
-type Group = {
+interface Group {
   groupLabel: string;
   menus: Menu[];
-};
+}
 
 export function getMenuList(pathname: string): Group[] {
   return [
+    // {
+    //   groupLabel: "",
+    //   menus: [
+    //     {
+    //       href: "/dashboard",
+    //       label: "Dashboard",
+    //       active: pathname.includes("/dashboard"),
+    //       icon: LayoutGrid,
+    //       submenus: []
+    //     }
+    //   ]
+    // },
     {
       groupLabel: "",
       menus: [
         {
-          href: "/dashboard",
-          label: "Dashboard",
-          active: pathname.includes("/dashboard"),
-          icon: LayoutGrid,
-          submenus: []
-        }
-      ]
-    },
-    {
-      groupLabel: "Contents",
-      menus: [
-        {
-          href: "",
-          label: "Posts",
-          active: pathname.includes("/posts"),
-          icon: SquarePen,
-          submenus: [
-            {
-              href: "/posts",
-              label: "All Posts"
-            },
-            {
-              href: "/posts/new",
-              label: "New Post"
-            }
-          ]
+          href: "/suppliers",
+          label: "Suppliers",
+          active: pathname.includes("/suppliers"),
+          icon: Truck
         },
         {
-          href: "/categories",
-          label: "Categories",
-          active: pathname.includes("/categories"),
-          icon: Bookmark
+          href: "/customers",
+          label: "Customers",
+          active: pathname.includes("/customers"),
+          icon: ShoppingCart
         },
         {
-          href: "/tags",
-          label: "Tags",
-          active: pathname.includes("/tags"),
-          icon: Tag
+          href: "/products",
+          label: "Products",
+          active: pathname.includes("/products"),
+          icon: PackageSearch
+        },
+        {
+          href: "/orders",
+          label: "Orders",
+          active: pathname.includes("/orders"),
+          icon: PackageSearch
         }
       ]
     },
