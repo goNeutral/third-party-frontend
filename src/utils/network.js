@@ -89,7 +89,7 @@ const getBaseApi = () => {
 
   return process.env.NEXT_PUBLIC_API
     ? process.env.NEXT_PUBLIC_API
-    : "http://127.0.0.1:8000";
+    : "https://3feb-125-16-53-78.ngrok-free.app";
 };
 
 export const BASE_API = getBaseApi();
