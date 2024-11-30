@@ -151,7 +151,7 @@ export function ProductDashboardComponent() {
   
         {filteredProducts.map((product:any) => (
           <Sheet key={product?.id}>
-            <SheetTrigger asChild>
+            {/* <SheetTrigger asChild> */}
               <div className="rounded-lg border bg-card text-card-foreground shadow-sm cursor-pointer hover:shadow-md transition-shadow">
                 <Card className="rounded">
                   <Image
@@ -167,7 +167,7 @@ export function ProductDashboardComponent() {
                   </div>
                 </Card>
               </div>
-            </SheetTrigger>
+            {/* </SheetTrigger> */}
             <SheetContent>
               <SheetHeader>
                 <SheetTitle>Edit Product</SheetTitle>
