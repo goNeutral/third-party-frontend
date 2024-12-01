@@ -77,6 +77,12 @@ const CustomerDashboardPage = (): JSX.Element => {
   }
   , []);
 
+
+  const successCallBack=()=>{
+    setIsAddingProduct(false)
+    setIsCreatingPO(false)
+    listCustomer()
+  }
   // const orders = getCustomers();
 
     const AddSupplierButton = (
@@ -92,7 +98,7 @@ const CustomerDashboardPage = (): JSX.Element => {
             <DialogTitle>Add New Customer</DialogTitle>
           </DialogHeader>
             <ScrollArea className="max-h-[80vh] p-2 pr-4">
-              <AddCustomerForm />
+              <AddCustomerForm  successCallBack={successCallBack} />
             </ScrollArea>
         </DialogContent>
       </Dialog>

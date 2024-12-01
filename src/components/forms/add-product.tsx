@@ -7,14 +7,15 @@ import {createProductMutation} from "@/hooks/products";
 // import { toast } from 'sonner';
 
 
-const AddProductForm = ({setIsAddingProduct, productList}: { setIsAddingProduct: any, productList: any }): JSX.Element => {
+const AddProductForm = ({setIsAddingProduct, productList,successCallBack}: { setIsAddingProduct: any, productList: any,successCallBack:any }): JSX.Element => {
     const [preview, setPreview] = useState<string | null>(null)
     const {mutate:createProduct} = createProductMutation(
         (res:any) => {
             // toast.success("Product Created Successfully");
             alert("Product Created Successfully");
-            productList();
-            setIsAddingProduct(false);
+            // productList();
+            // setIsAddingProduct(false);
+            successCallBack()
         },
         (err:any) => {
           console.error("Product Creation Error:", err);

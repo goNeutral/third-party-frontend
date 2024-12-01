@@ -15,49 +15,19 @@ import {
 } from '@/components/ui/dialog';
 import { Plus } from 'lucide-react';
 import AddSupplierForm from './add-supplier';
+import EditSupplierForm from './edit-supplier';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import CreatePOForm from './CreatePOForm';
 import {listSupplierMutation} from "@/hooks/suppliers"
 
-// function getSuppliers(): Supplier[] {
-// 	// Fetch data from your API here.
-// 	return [
-// 		{
-// 			id: '728ed52f',
-// 			supplierName: 'Supplier 1',
-// 			registeredEntityName: 'Registered Entity 1',
-// 			city: 'Kanpur',
-// 			gstStatus: 'active',
-// 			paymentStatus: 'pending',
-// 			businessTillDate: 'Business Till Date 1',
-// 		},
-// 		{
-// 			id: '728ed52k',
-// 			supplierName: 'Supplier 2',
-// 			registeredEntityName: 'Registered Entity 2',
-// 			city: 'Gurgaon',
-// 			gstStatus: 'inactive',
-// 			paymentStatus: 'completed',
-// 			businessTillDate: 'Business Till Date 2',
-// 		},
-// 		{
-// 			id: '728ed52l',
-// 			supplierName: 'Supplier 3',
-// 			registeredEntityName: 'Registered Entity 3',
-// 			city: 'Indore',
-// 			gstStatus: 'active',
-// 			paymentStatus: 'pending',
-// 			businessTillDate: 'Business Till Date 3',
-// 		},
-// 		// ...
-// 	];
-// }
+
 
 const SupplierDashboardPage = (): JSX.Element => {
 	const [isAddingProduct, setIsAddingProduct] = useState(false);
 	const [isCreatingPO, setIsCreatingPO] = useState(false);
 	const [orders, setOrders] = useState<any>([]);
-
+	const [selectSupplier , setSelectSupplier ] = useState<any>({})
+	const [editing,setEditing] =useState<boolean>(false)
 	const {mutate: listSupplier} = listSupplierMutation(
 	  (data:any) => {
 		setOrders(data.data);
@@ -77,9 +47,16 @@ const SupplierDashboardPage = (): JSX.Element => {
 	  fetchData();
 	}
 	, []);
+	const successCallBack = async () => {
+		setIsCreatingPO(false)
+		setIsAddingProduct(false)
+		// setEditing(false)
+		// await listSupplier()
 
+	}
+ 
 	const AddSupplierButton = (
-		<Dialog open={isAddingProduct} onOpenChange={setIsAddingProduct}>
+		<Dialog open={isAddingProduct} onOpenChange={setIsAddingProduct}  >
 			<DialogTrigger asChild>
 				<Button>
 					<Plus className='h-2 w-2' />
@@ -91,7 +68,7 @@ const SupplierDashboardPage = (): JSX.Element => {
 					<DialogTitle>Add New Supplier</DialogTitle>
 				</DialogHeader>
 				<ScrollArea className='max-h-[80vh] pr-4'>
-					<AddSupplierForm />
+					<AddSupplierForm successCallBack={successCallBack} />
 				</ScrollArea>
 			</DialogContent>
 		</Dialog>
@@ -107,25 +84,49 @@ const SupplierDashboardPage = (): JSX.Element => {
 					<DialogTitle>Create Product Order</DialogTitle>
 				</DialogHeader>
 				<ScrollArea className='max-h-[80vh] pr-4'>
-					<CreatePOForm />
+					<CreatePOForm successCallBack={successCallBack} />
 				</ScrollArea>
 			</DialogContent>
 		</Dialog>
 	);
+
+	
 	return (
 		<div>
 			<Navbar
 				title='Supplier'
 				buttons={[CreatePOButton, AddSupplierButton]}
 			/>
-			{/* <div className="grid grid-cols-1 md:grid-cols-5 m-4 gap-4"> */}
-			{/* <ProductDashboardStats className="md:col-span-2"/> */}
-			{/* <GraphStats className=" md:col-span-3" /> */}
-			{/* <MyChart /> */}
-			{/* </div> */}
+			<Dialog open={editing} onOpenChange={setEditing}>
+			{/* <DialogTrigger asChild>
+				<Button>
+					<Plus className='h-2 w-2' />
+					Edit Supplier
+				</Button>
+			</DialogTrigger> */}
+			<DialogContent className='min-w-[80vw]'>
+				<DialogHeader>
+					<DialogTitle>Edit Supplier</DialogTitle>
+				</DialogHeader>
+				<ScrollArea className='max-h-[80vh] pr-4'>
+					<EditSupplierForm  supplier={selectSupplier}  />
+				</ScrollArea>
+			</DialogContent>
+		</Dialog>
 			<Card className='p-4 m-4 rounded-sm'>
 				{/* <CreatePOForm /> */}
-				<DataTable columns={supplierColumns} data={orders} />
+				<DataTable columns={supplierColumns} data={orders}  
+				
+				callback={(data: any) => {
+					// alert(data?.id);
+					console.log(data);
+					setSelectSupplier(data)
+					setEditing(true)
+					
+
+				}}
+
+				/>
 			</Card>
 		</div>
 	);

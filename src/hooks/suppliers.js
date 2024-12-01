@@ -127,3 +127,39 @@ export const updateSalesOrderMutation = (successCallback, errorCallback) => {
         },
     });
 }
+
+const updateSupplierRequest = (data) => {
+    console.log("data update =>",data)
+    const url = getUrl(`/api/suppliers/${data?.id}/`);
+    return request('PATCH', url, data, true);
+}
+
+export const updateSupplierMutation = (successCallback, errorCallback) => {
+    return useMutation({
+        mutationFn: updateSupplierRequest,
+        onSuccess: (res) => {
+            successCallback(res);
+        },
+        onError: (err) => {
+            errorCallback(err);
+        },
+    });
+}
+
+const deletSupplierRequest  = (id) => {
+    console.log(id)
+    const url = getUrl(`/api/suppliers/${id}/`);
+    return request('DELETE', url, {}, true);
+}
+
+export const deletSupplierMutation = (successCallback, errorCallback) => {
+    return useMutation({
+        mutationFn: deletSupplierRequest,
+        onSuccess: (res) => {
+            successCallback(res);
+        },
+        onError: (err) => {
+            errorCallback(err);
+        },
+    });
+}

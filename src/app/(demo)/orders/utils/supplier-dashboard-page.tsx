@@ -170,9 +170,7 @@ const SupplierDashboardPage = (): JSX.Element => {
 				buttons={[]}
 			/>
 			<Dialog open={isCreatingPO} onOpenChange={setOpen}>
-				<DialogTrigger asChild>
-					<Button>Info</Button>
-				</DialogTrigger>
+			
 				<DialogContent className='min-w-[95vw]'>
 					<ScrollArea className='max-h-[80vh] pr-4'>
 					{ isCreatingSO ? <> <CreateSOForm data={displayData} listPO={listSalesOrder} /> </> : <><CreatePOForm data={displayData} listPO={listPO} /></>}

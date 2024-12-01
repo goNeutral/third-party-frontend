@@ -15,7 +15,7 @@ import { Separator } from "@/components/ui/separator"
 import { Card } from "@/components/ui/card"
 import { Table, TableBody, TableFooter, TableCaption, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Button } from "@/components/ui/button"
-import { type ProductCell } from "./CreatePOForm"
+
 import { searchProductMutation } from '@/hooks/products';
 
 
