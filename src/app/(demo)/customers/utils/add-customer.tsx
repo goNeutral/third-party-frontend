@@ -68,7 +68,7 @@ const formSchema = z.object({
 	// 	),
 });
 
-export default function AddCustomerForm(successCallBack: any) {
+export default function AddCustomerForm({successCallBack}: {successCallBack: () => void}) {
 	const [State, setState] = useState<any>([]);
 	const [City, setCity] = useState<any>([]);
 

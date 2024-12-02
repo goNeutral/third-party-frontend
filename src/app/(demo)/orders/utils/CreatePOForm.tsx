@@ -202,71 +202,7 @@ export default function CreatePOForm(data: any, listPO: any): JSX.Element {
 							</FormItem>
 						)}
 					/>
-					{/* <FormField
-						control={form.control}
-						name='deliveryTerms'
-						render={({ field }) => (
-							<FormItem>
-								<FormLabel>Delivery Time</FormLabel>
-								<FormControl>
-									<Input
-										placeholder='in days'
-										type='number'
-										{...field}
-									/>
-								</FormControl>
-								<FormMessage />
-							</FormItem>
-						)}
-					/>
-					<FormField
-						control={form.control}
-						name='paymentTerms'
-						render={({ field }) => (
-							<FormItem>
-								<FormLabel>Payment Time</FormLabel>
-								<FormControl>
-									<Input
-										placeholder='in days'
-										type='number'
-										{...field}
-									/>
-								</FormControl>
-								<FormMessage />
-							</FormItem>
-						)}
-					/> */}
-					{/* <FormField
-						control={form.control}
-						name='deliveryMode'
-						render={({ field }) => (
-							<FormItem>
-								<FormLabel>Mode of Delivery</FormLabel>
-								<Select
-									onValueChange={field.onChange}
-									defaultValue={field.value}
-								>
-									<FormControl>
-										<SelectTrigger>
-											<SelectValue placeholder='Select' />
-										</SelectTrigger>
-									</FormControl>
-									<SelectContent>
-										<SelectItem value='m@example.com'>
-											m@example.com
-										</SelectItem>
-										<SelectItem value='m@google.com'>
-											m@google.com
-										</SelectItem>
-										<SelectItem value='m@support.com'>
-											m@support.com
-										</SelectItem>
-									</SelectContent>
-								</Select>
-								<FormMessage />
-							</FormItem>
-						)}
-					/> */}
+				
 					<POFormProductForm
 						products={products}
 						setProducts={setProducts}

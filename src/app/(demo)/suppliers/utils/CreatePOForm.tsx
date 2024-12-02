@@ -132,6 +132,10 @@ export default function CreatePOForm(successCallBack: () => void): JSX.Element {
 	const getData = async () => {
 		await getSOProduct(form.getValues().so_id);
 	};
+	useEffect(() => {
+		getData();
+	}, [])
+	
 
 	const [customerList, setCustomerList] = useState([]);
 	const { mutate: searchCustomer } = searchSupplierMutation(

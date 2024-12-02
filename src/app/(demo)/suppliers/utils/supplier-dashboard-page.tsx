@@ -19,6 +19,7 @@ import EditSupplierForm from './edit-supplier';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import CreatePOForm from './CreatePOForm';
 import {listSupplierMutation} from "@/hooks/suppliers"
+import { Input } from "@/components/ui/input"
 
 
 
@@ -28,6 +29,7 @@ const SupplierDashboardPage = (): JSX.Element => {
 	const [orders, setOrders] = useState<any>([]);
 	const [selectSupplier , setSelectSupplier ] = useState<any>({})
 	const [editing,setEditing] =useState<boolean>(false)
+	const [searchTerm, setSearchTerm] = useState("");
 	const {mutate: listSupplier} = listSupplierMutation(
 	  (data:any) => {
 		setOrders(data.data);
@@ -47,6 +49,17 @@ const SupplierDashboardPage = (): JSX.Element => {
 	  fetchData();
 	}
 	, []);
+
+	useEffect(() => {
+		const getData = setTimeout(() => {
+			listSupplier(searchTerm)
+	
+		}, 1000)
+		return () => clearTimeout(getData)
+
+	}, [searchTerm])
+
+
 	const successCallBack = async () => {
 		setIsCreatingPO(false)
 		setIsAddingProduct(false)
@@ -68,7 +81,7 @@ const SupplierDashboardPage = (): JSX.Element => {
 					<DialogTitle>Add New Supplier</DialogTitle>
 				</DialogHeader>
 				<ScrollArea className='max-h-[80vh] pr-4'>
-					<AddSupplierForm successCallBack={successCallBack} />
+					<AddSupplierForm CallBack={successCallBack} />
 				</ScrollArea>
 			</DialogContent>
 		</Dialog>
@@ -89,13 +102,22 @@ const SupplierDashboardPage = (): JSX.Element => {
 			</DialogContent>
 		</Dialog>
 	);
-
+	const SearchSupplier = (
+		<div className="relative">
+		  <Input
+			placeholder="Search by supplier name"
+			value={searchTerm}
+			onChange={(e) => { setSearchTerm(e.target.value) }}
+			className="pl-8"
+		  />
+		</div>
+	  );
 	
 	return (
 		<div>
 			<Navbar
 				title='Supplier'
-				buttons={[CreatePOButton, AddSupplierButton]}
+				buttons={[CreatePOButton, AddSupplierButton,SearchSupplier]}
 			/>
 			<Dialog open={editing} onOpenChange={setEditing}>
 			{/* <DialogTrigger asChild>

@@ -67,7 +67,7 @@ export const searchProductMutation = (successCallback, errorCallback) => {
 	});
 }
 
-const getSOProductRequest = (data) => {
+const getSOProductRequest = (data="") => {
 	const url = getUrl(`/api/products/product_sales_order/?so=${data}`);
 	return request('GET', url, data, false);
 }

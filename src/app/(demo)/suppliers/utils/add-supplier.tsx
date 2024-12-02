@@ -67,7 +67,7 @@ import {
 	// 	),
 });
 
-export default function AddSupplierForm(successCallBack:any): JSX.Element {
+export default function AddSupplierForm({CallBack}: {CallBack: any}): JSX.Element {
 	const [State, setState] = useState<any>([])
 	
 	useEffect(() => {
@@ -85,7 +85,7 @@ export default function AddSupplierForm(successCallBack:any): JSX.Element {
   
 	  const {mutate:createSupplier} = createSupplierMutation(
 		  (res:any) => {
-			successCallBack()
+			CallBack()
 			  toast.success('Supplier created successfully');
 			//   successCallBack()
 		  },

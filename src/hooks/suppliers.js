@@ -19,8 +19,8 @@ export const createSupplierMutation = (successCallback, errorCallback) => {
     });
 }
 
-const listSupplierRequest = () => {
-    const url = getUrl('/api/suppliers/');
+const listSupplierRequest = (name = "") => {
+    const url = getUrl('/api/suppliers/?name=' + name);
     console.log(url);
     return request('GET', url, null, true);
 }
