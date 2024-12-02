@@ -89,7 +89,7 @@ const getBaseApi = () => {
 
   return process.env.NEXT_PUBLIC_API
     ? process.env.NEXT_PUBLIC_API
-    : "http://localhost:8000";
+    : "https://backend.goneutral.in";
 };
 
 export const BASE_API = getBaseApi();
