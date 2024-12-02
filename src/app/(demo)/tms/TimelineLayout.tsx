@@ -14,6 +14,14 @@ import {
 } from "@/components/ui/timeline";
 import { formatDate } from "@/utils/datetime";
 
+const capitalizeWords = (text) => {
+	const str = text.toLowerCase();
+  return str.replace(
+    /\w\S*/g,
+    text => text.charAt(0).toUpperCase() + text.substring(1).toLowerCase()
+  );
+}
+
 export const TimelineLayout = ({ transactions }) => {
 	console.log(transactions[0].readerReadTime);
 	return (
@@ -23,7 +31,7 @@ export const TimelineLayout = ({ transactions }) => {
 					<TimelineConnector />
 					<TimelineHeader>
 						<TimelineIcon />
-						<TimelineTitle>{transaction.tollPlazaName}</TimelineTitle>
+						<TimelineTitle>{capitalizeWords(transaction.tollPlazaName)}</TimelineTitle>
 					</TimelineHeader>
 					<TimelineContent>
 						<TimelineDescription className="h-1">{formatDate(transaction.readerReadTime)}</TimelineDescription>
