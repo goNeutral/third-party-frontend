@@ -44,6 +44,10 @@ export interface SalesOrder {
 
 export const salesOrderColumns: Array<ColumnDef<SalesOrder>> = [
     {
+        accessorKey: "so_id",
+        header: "SO ID",
+    },
+    {
         accessorKey: "customer",
         header: "Customer",
     },
@@ -85,6 +89,10 @@ export interface PurchaseOrder {
 }
 
 export const purchaseOrderColumns: Array<ColumnDef<PurchaseOrder>> = [
+    {
+        accessorKey: "po_id",
+        header: "PO ID",
+    },
     {
         accessorKey: "supplier",
         header: "Supplier",

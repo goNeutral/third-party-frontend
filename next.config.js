@@ -2,7 +2,7 @@
 const nextConfig = {
   reactStrictMode: true,
   images: {
-    domains: ['png.pngtree.com','127.0.0.1',"backend.goneutral.in"],
+    domains: ['png.pngtree.com','127.0.0.1',"backend.goneutral.in","localhost"],
 
   },
 }

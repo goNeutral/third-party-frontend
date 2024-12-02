@@ -1,16 +1,14 @@
 'use client';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect,useRef } from 'react';
 import { toast } from 'sonner';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
-import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import {
 	Form,
 	FormControl,
-	FormDescription,
 	FormField,
 	FormItem,
 	FormLabel,
@@ -24,13 +22,11 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from '@/components/ui/select';
-
-import { createCustomerMutation } from '@/hooks/customer';
-
-import { GetState, GetCity } from 'react-country-state-city';
+import { updateSupplierMutation,deletSupplierMutation } from '@/hooks/suppliers';
+import { GetState } from 'react-country-state-city';
 
 const formSchema = z.object({
-	customerName: z.string(),
+	supplierName: z.string(),
 	registeredEntityName: z.string(),
 	registeredAddress: z.string(),
 	phone: z.string(),
@@ -68,73 +64,147 @@ const formSchema = z.object({
 	// 	),
 });
 
-export default function AddCustomerForm({successCallBack}: {successCallBack: () => void}) {
+export default function EditSupplierForm({ supplier }: { supplier: any }): JSX.Element {
 	const [State, setState] = useState<any>([]);
-	const [City, setCity] = useState<any>([]);
+	const [adhar,setAdhar] = useState<any>();
+	const adharRef = useRef<HTMLInputElement>(null);
+	const [gst,setGst] = useState<any>();
+	const gstRef = useRef<HTMLInputElement>(null);
+	const [pan,setPan] = useState<any>();
+	const panRef = useRef<HTMLInputElement>(null);
+		useEffect(() => {
+		async function getAadharFile(){
+			try {
+				const response = await fetch(supplier.aadhar_file);
+				
+				const blob = await response.blob();
+				const fileName = supplier.aadhar_file.split("/").pop(); // Extract filename from URL
+				const file = new File([blob], fileName, { type: blob.type });
+				setAdhar(file);
+				
+			  } catch (error) {
+				console.error("Error fetching file:", error);
+			  }
 
-	useEffect(() => {
+		}
+		async function getGstFile(){
+			try {
+				const response = await fetch(supplier.gst_file);
+			
+				const blob = await response.blob();
+				const fileName = supplier.gst_file.split("/").pop(); // Extract filename from URL
+				const file = new File([blob], fileName, { type: blob.type });
+				setGst(file);
+			
+			  } catch (error) {
+				console.error("Error fetching file:", error);
+			  }
+
+		}
+		async function getPanFile(){
+			try {
+				const response = await fetch(supplier.pan_file);
+			
+				const blob = await response.blob();
+				const fileName = supplier.pan_file.split("/").pop(); // Extract filename from URL
+				const file = new File([blob], fileName, { type: blob.type });
+				setPan(file);
+		
+			  } catch (error) {
+				console.error("Error fetching file:", error);
+			  }
+
+		}
 		async function fetchData() {
 			const data = await GetState(101);
-			console.log('ins data', data);
+
 			setState(data);
 		}
+		if(supplier?.aadhar_file){
+			getAadharFile()
+		}
+		if(supplier?.pan_file){
+			getPanFile()
+		}
+		if(supplier?.gst_file){
+			getGstFile()
+		}
 		fetchData();
-	}, []);
+	}, [supplier]);
 
-	const { mutate: createCustomer } = createCustomerMutation(
+	useEffect(() => {
+		if (adharRef.current && adhar) {
+			const dataTransfer = new DataTransfer();
+
+			dataTransfer.items.add(adhar);
+			adharRef.current.files = dataTransfer.files;
+		}
+	}, [adhar])
+	
+
+	const { mutate: updateSupplier } =  updateSupplierMutation(
 		(res: any) => {
-			console.log('Create Customer:', res);
-			toast('Customer created successfully');
-			successCallBack();
+			toast.success('Supplier created successfully');
 		},
 		(err: any) => {
-			console.log('Create Customer Error:', err);
-			toast('Failed to create customer');
+			console.error('Create Supplier Error:', err);
+			toast.error('Failed to create Supplier');
 		}
 	);
+
+	const {mutate:deletSupplier} = deletSupplierMutation(
+		(res:any)=>{
+			toast.success('Supplier deleted successfully');
+		},
+		(res:any)=>{
+			toast.error('Failed to remove Supplier');
+		}
+	)
 
 	const form = useForm<z.infer<typeof formSchema>>({
 		resolver: zodResolver(formSchema),
 	});
 
-	function onSubmit(values: z.infer<typeof formSchema>) {
+	async function onSubmit(values: z.infer<typeof formSchema>): Promise<void> {
 		try {
-			console.log(values);
-			const data = new FormData();
-			data.append('name', values.customerName);
-			data.append('registered_name', values.registeredEntityName);
-			data.append('address', values.registeredAddress);
-			data.append('city', values.city);
-			data.append('state', values.state);
-			data.append('pincode', values.pincode);
-			data.append('gst', values.gstNumber);
-			data.append('aadhar', values.aadharNumber);
-			data.append('pan', values.panNumber);
-			data.append('gst_status', values.gstStatus);
-			data.append('gst_file', values.gstFile);
-			data.append('aadhar_file', values.aadharFile);
-			data.append('pan_file', values.panFile);
-			data.append('phone', values.phone);
-			data.append('email', values.email);
-
-			createCustomer(data);
-			// toast(
-			// 	<pre className='mt-2 w-[340px] rounded-md bg-slate-950 p-4 '>
-			// 		<code className='text-white'>
-			// 			{JSON.stringify(values, null, 2)}
-			// 			{ values.gstFile instanceof File ? values.gstFile.name : '' }
-			// 			{ values.aadharFile instanceof File ? values.gstFile.name : '' }
-			// 			{ values.panFile instanceof File ? values.gstFile.name : '' }
-			// 			{/* { values.geotaggedImage instanceof File ? values.gstFile.name : '' } */}
-			// 		</code>
-			// 	</pre>
-			// );
-			console.log(JSON.stringify(values, null, 2));
+			console.log("Received values:", values);
+			if (!supplier?.id) {
+				console.error("Supplier ID is missing");
+				toast.error("Supplier ID is missing");
+				return;
+			}
+	
+			let data = new FormData(supplier);
+			data.append('id', supplier.id );
+			data.append('name', values?.supplierName || supplier?.name );
+			// data.append('registered_name', values.registeredEntityName || '');
+			// data.append('address', values.registeredAddress || '');
+			// data.append('city', values.city || '');
+			// data.append('state', values.state || '');
+			// data.append('pincode', values.pincode || '');
+			// data.append('gst', values.gstNumber || '');
+			// data.append('aadhar', values.aadharNumber || '');
+			// data.append('pan', values.panNumber || '');
+			// data.append('gst_status', values.gstStatus || '');
+			// if (values.gstFile) data.append('gst_file', values.gstFile);
+			// if (values.aadharFile) data.append('aadhar_file', values.aadharFile);
+			// if (values.panFile) data.append('pan_file', values.panFile);
+			// data.append('phone', values.phone || '');
+			// data.append('email', values.email || '');
+	
+			// console.log("Constructed FormData:");
+			// data.forEach((value, key) => {
+			// 	console.log(`${key}:`, value);
+			// });
+			console.log("pre sub",data)
+			await updateSupplier(data);
+			toast.success("Supplier updated successfully!");
 		} catch (error) {
-			console.error('Form submission error', error);
-			toast.error('Failed to submit the form. Please try again.');
+			console.error("Form submission error:", error);
+			toast.error("Failed to submit the form. Please try again.");
 		}
 	}
+	
 
 	return (
 		<Form {...form}>
@@ -144,12 +214,12 @@ export default function AddCustomerForm({successCallBack}: {successCallBack: () 
 			>
 				<FormField
 					control={form.control}
-					name='customerName'
+					name='supplierName'
 					render={({ field }) => (
 						<FormItem>
-							<FormLabel>Customer Name</FormLabel>
+							<FormLabel>Supplier Name</FormLabel>
 							<FormControl>
-								<Input placeholder='' type='' {...field} />
+								<Input defaultValue={supplier?.name} placeholder='' type='' {...field} />
 							</FormControl>
 
 							<FormMessage />
@@ -164,7 +234,7 @@ export default function AddCustomerForm({successCallBack}: {successCallBack: () 
 						<FormItem>
 							<FormLabel>Registered Entity Name</FormLabel>
 							<FormControl>
-								<Input placeholder='' type='' {...field} />
+								<Input defaultValue={supplier?.registered_name} placeholder='' type='' {...field} />
 							</FormControl>
 
 							<FormMessage />
@@ -178,7 +248,7 @@ export default function AddCustomerForm({successCallBack}: {successCallBack: () 
 						<FormItem>
 							<FormLabel>Phone No</FormLabel>
 							<FormControl>
-								<Input placeholder='' type='' {...field} />
+								<Input defaultValue={supplier?.phone} placeholder='' type='' {...field} />
 							</FormControl>
 
 							<FormMessage />
@@ -192,7 +262,7 @@ export default function AddCustomerForm({successCallBack}: {successCallBack: () 
 						<FormItem>
 							<FormLabel>Email ID</FormLabel>
 							<FormControl>
-								<Input placeholder='' type='' {...field} />
+								<Input defaultValue={supplier.email}  placeholder='' type='' {...field} />
 							</FormControl>
 
 							<FormMessage />
@@ -206,7 +276,7 @@ export default function AddCustomerForm({successCallBack}: {successCallBack: () 
 						<FormItem>
 							<FormLabel>Registered Address</FormLabel>
 							<FormControl>
-								<Textarea placeholder='' {...field} />
+								<Textarea defaultValue={supplier.address} placeholder='' {...field} />
 							</FormControl>
 
 							<FormMessage />
@@ -222,7 +292,7 @@ export default function AddCustomerForm({successCallBack}: {successCallBack: () 
 							<FormLabel>State</FormLabel>
 							<Select
 								onValueChange={field.onChange}
-								defaultValue={field.value}
+								defaultValue={supplier.state}
 							>
 								<FormControl>
 									<SelectTrigger>
@@ -253,7 +323,7 @@ export default function AddCustomerForm({successCallBack}: {successCallBack: () 
 						<FormItem>
 							<FormLabel>City</FormLabel>
 							<FormControl>
-								<Input placeholder='' type='' {...field} />
+								<Input defaultValue={supplier.city} placeholder='' type='' {...field} />
 							</FormControl>
 
 							<FormMessage />
@@ -272,6 +342,7 @@ export default function AddCustomerForm({successCallBack}: {successCallBack: () 
 									placeholder=''
 									type='number'
 									{...field}
+									defaultValue={ supplier?.pincode}
 								/>
 							</FormControl>
 
@@ -287,7 +358,7 @@ export default function AddCustomerForm({successCallBack}: {successCallBack: () 
 						<FormItem>
 							<FormLabel>GST Number</FormLabel>
 							<FormControl>
-								<Input placeholder='' type='' {...field} />
+								<Input defaultValue={supplier?.gst} placeholder='' type='' {...field} />
 							</FormControl>
 
 							<FormMessage />
@@ -300,9 +371,9 @@ export default function AddCustomerForm({successCallBack}: {successCallBack: () 
 					name='aadharNumber'
 					render={({ field }) => (
 						<FormItem>
-							<FormLabel>Aadhar Number</FormLabel>
+							<FormLabel>adhar Number</FormLabel>
 							<FormControl>
-								<Input placeholder='' type='' {...field} />
+								<Input defaultValue={supplier.aadhar} placeholder='' type='' {...field} />
 							</FormControl>
 
 							<FormMessage />
@@ -317,7 +388,7 @@ export default function AddCustomerForm({successCallBack}: {successCallBack: () 
 						<FormItem>
 							<FormLabel>PAN Number</FormLabel>
 							<FormControl>
-								<Input placeholder='' type='' {...field} />
+								<Input defaultValue={supplier?.pan} placeholder='' type='' {...field} />
 							</FormControl>
 
 							<FormMessage />
@@ -332,7 +403,7 @@ export default function AddCustomerForm({successCallBack}: {successCallBack: () 
 							<FormLabel>GST Status</FormLabel>
 							<Select
 								onValueChange={field.onChange}
-								defaultValue={field.value}
+								defaultValue={supplier.gst_status}
 							>
 								<FormControl>
 									<SelectTrigger>
@@ -380,6 +451,8 @@ export default function AddCustomerForm({successCallBack}: {successCallBack: () 
 													);
 												}}
 												className=''
+												defaultValue={gst}
+												
 												// {...fileRef}
 											/>
 										</FormControl>
@@ -388,6 +461,13 @@ export default function AddCustomerForm({successCallBack}: {successCallBack: () 
 									{value instanceof File && (
 										<img
 											src={URL.createObjectURL(value)}
+											width={100}
+											height={100}
+										/>
+									)}
+									{gst && (
+										<img
+											src={URL.createObjectURL(gst)}
 											width={100}
 											height={100}
 										/>
@@ -406,7 +486,7 @@ export default function AddCustomerForm({successCallBack}: {successCallBack: () 
 								<div className='py-2 px-4 border-2 gap-2 border-dashed rounded flex flex-row'>
 									<FormItem className='flex flex-row gap-2 items-center justify-between'>
 										<FormLabel className=''>
-											Aadhar
+											adhar
 										</FormLabel>
 										<FormControl>
 											<Input
@@ -415,10 +495,13 @@ export default function AddCustomerForm({successCallBack}: {successCallBack: () 
 												onChange={(e) => {
 													onChange(
 														e?.target.files?.[0]
+														
 													);
+													setAdhar()
 												}}
 												className=''
-												// {...fileRef}
+												// ref={adharRef}
+												defaultValue={adhar}
 											/>
 										</FormControl>
 										<FormMessage />
@@ -426,6 +509,13 @@ export default function AddCustomerForm({successCallBack}: {successCallBack: () 
 									{value instanceof File && (
 										<img
 											src={URL.createObjectURL(value)}
+											width={100}
+											height={100}
+										/>
+									)}
+									{adhar && (
+										<img
+											src={URL.createObjectURL(adhar)}
 											width={100}
 											height={100}
 										/>
@@ -454,6 +544,7 @@ export default function AddCustomerForm({successCallBack}: {successCallBack: () 
 													);
 												}}
 												className=''
+												defaultValue={pan}
 												// {...fileRef}
 											/>
 										</FormControl>
@@ -466,40 +557,30 @@ export default function AddCustomerForm({successCallBack}: {successCallBack: () 
 											height={100}
 										/>
 									)}
+									{pan && (
+										<img
+											src={URL.createObjectURL(pan)}
+											width={100}
+											height={100}
+										/>
+									)}
 								</div>
 							);
 						}}
 					/>
-					{/* <FormField
-						control={form.control}
-						name='geotaggedImage'
-						render={({ field: { value, onChange, ...fieldProps } }) => {
-							return (
-								<div className='py-2 px-4 border-2 gap-2 border-dashed rounded flex flex-row'>
-									<FormItem className='flex flex-row gap-2 items-center justify-between'>
-										<FormLabel className=''>GeoTagged</FormLabel>
-										<FormControl>
-											<Input
-												{...fieldProps}
-												type='file'
-												onChange={(e) => {
-													onChange(e?.target.files?.[0]);
-												}}
-												className=''
-												// {...fileRef}
-											/>
-										</FormControl>
-										<FormMessage />
-									</FormItem>
-									{value instanceof File && <img src={URL.createObjectURL(value)} width={100} height={100} />}
-								</div>
-
-							);
-						}}
-					/> */}
 				</div>
-				<Button type='submit'>Submit</Button>
+				
 			</form>
+			<div className='flex w-full mt-10 justify-center gap-5' >
+				<Button className='w-[45%]' onClick={()=>{
+					onSubmit( form.getValues()
+						
+					)
+				}} >Update</Button><Button className='w-[45%]' onClick={()=>{
+					console.log(supplier)
+					deletSupplier(supplier.id)
+				}} >Delete</Button>
+				</div>
 		</Form>
 	);
 }

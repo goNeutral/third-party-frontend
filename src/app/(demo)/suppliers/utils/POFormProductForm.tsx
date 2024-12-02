@@ -22,6 +22,7 @@ import {
 	TableRow,
 } from '@/components/ui/table';
 import { Button } from '@/components/ui/button';
+import displayCost from  '@/utils/display'
 import { type ProductCell } from './CreatePOForm';
 // import { searchProductMutation } from '@/hooks/products';
 
@@ -189,7 +190,7 @@ const POFormProductForm = ({
 								{product.rate}
 							</TableCell>
 							<TableCell className='border text-right'>
-								{product.amount}
+								{displayCost(product.amount)}
 							</TableCell>
 							<TableCell className='border text-right'>
 								{product.discount}
@@ -200,7 +201,7 @@ const POFormProductForm = ({
 										{product.cgst}
 									</div>
 									<div className='col-span-2 pl-1'>
-										{product.cgst * product.netAmount}
+										{displayCost(0.01*product.cgst * product.netAmount)}
 									</div>
 								</div>
 							</TableCell>
@@ -210,7 +211,7 @@ const POFormProductForm = ({
 										{product.sgst}
 									</div>
 									<div className='col-span-2 pl-1'>
-										{product.sgst * product.netAmount}
+										{ displayCost(0.01 * product.sgst * product.netAmount)}
 									</div>
 								</div>
 							</TableCell>
@@ -220,12 +221,19 @@ const POFormProductForm = ({
 										{product.igst}
 									</div>
 									<div className='col-span-2 pl-1'>
-										{product.igst * product.netAmount}
+										{displayCost(0.01*product.igst * product.netAmount)}
 									</div>
 								</div>
 							</TableCell>
 							<TableCell className='border text-right'>
-								{product.netAmount}
+							{displayCost(
+									product.netAmount *
+										(1 +
+											(product.igst +
+												product.sgst +
+												product.cgst) /
+												100)
+								)}
 							</TableCell>
 						</TableRow>
 					))}

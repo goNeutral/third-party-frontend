@@ -67,9 +67,9 @@ import {
 	// 	),
 });
 
-export default function AddSupplierForm(): JSX.Element {
+export default function AddSupplierForm({CallBack}: {CallBack: any}): JSX.Element {
 	const [State, setState] = useState<any>([])
-	const [City, setCity] = useState<any>([])
+	
 	useEffect(() => {
 		async function fetchData() {
 		  const data = await GetState(101);
@@ -85,8 +85,9 @@ export default function AddSupplierForm(): JSX.Element {
   
 	  const {mutate:createSupplier} = createSupplierMutation(
 		  (res:any) => {
-			  
+			CallBack()
 			  toast.success('Supplier created successfully');
+			//   successCallBack()
 		  },
 		  (err:any) => {
 			  console.error("Create Supplier Error:", err);
@@ -429,33 +430,7 @@ export default function AddSupplierForm(): JSX.Element {
 							);
 						}}
 					/>
-					{/* <FormField
-						control={form.control}
-						name='geotaggedImage'
-						render={({ field: { value, onChange, ...fieldProps } }) => {
-							return (
-								<div className='py-2 px-4 border-2 gap-2 border-dashed rounded flex flex-row'>
-									<FormItem className='flex flex-row gap-2 items-center justify-between'>
-										<FormLabel className=''>GeoTagged</FormLabel>
-										<FormControl>
-											<Input
-												{...fieldProps}
-												type='file'
-												onChange={(e) => {
-													onChange(e?.target.files?.[0]);
-												}}
-												className=''
-												// {...fileRef}
-											/>
-										</FormControl>
-										<FormMessage />
-									</FormItem>
-									{value instanceof File && <img src={URL.createObjectURL(value)} width={100} height={100} />}
-								</div>
-
-							);
-						}}
-					/> */}
+					
 				</div>
 				<Button type='submit'>Submit</Button>
 			</form>

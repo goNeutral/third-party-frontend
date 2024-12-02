@@ -19,8 +19,8 @@ export const createSupplierMutation = (successCallback, errorCallback) => {
     });
 }
 
-const listSupplierRequest = () => {
-    const url = getUrl('/api/suppliers/');
+const listSupplierRequest = (name = "") => {
+    const url = getUrl('/api/suppliers/?name=' + name);
     console.log(url);
     return request('GET', url, null, true);
 }
@@ -119,6 +119,42 @@ const updateSalesOrderRequest = (data) => {
 export const updateSalesOrderMutation = (successCallback, errorCallback) => {
     return useMutation({
         mutationFn: updateSalesOrderRequest,
+        onSuccess: (res) => {
+            successCallback(res);
+        },
+        onError: (err) => {
+            errorCallback(err);
+        },
+    });
+}
+
+const updateSupplierRequest = (data) => {
+    console.log("data update =>",data)
+    const url = getUrl(`/api/suppliers/${data?.id}/`);
+    return request('PATCH', url, data, true);
+}
+
+export const updateSupplierMutation = (successCallback, errorCallback) => {
+    return useMutation({
+        mutationFn: updateSupplierRequest,
+        onSuccess: (res) => {
+            successCallback(res);
+        },
+        onError: (err) => {
+            errorCallback(err);
+        },
+    });
+}
+
+const deletSupplierRequest  = (id) => {
+    console.log(id)
+    const url = getUrl(`/api/suppliers/${id}/`);
+    return request('DELETE', url, {}, true);
+}
+
+export const deletSupplierMutation = (successCallback, errorCallback) => {
+    return useMutation({
+        mutationFn: deletSupplierRequest,
         onSuccess: (res) => {
             successCallback(res);
         },

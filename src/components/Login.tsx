@@ -23,6 +23,7 @@ const GoogleLoginComponent = () => {
         loading: false,
         token: res?.data?.access,
       });
+      window.location.href = "/products";
       
     },
     (err:any) => {

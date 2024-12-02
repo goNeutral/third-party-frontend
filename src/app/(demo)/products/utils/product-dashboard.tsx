@@ -27,6 +27,7 @@ import AddProductForm from "../../../../components/forms/add-product"
 import { useAtom } from "jotai"
 import { productsQueryAtom } from "./store"
 import {productListMutation,createProductMutation} from "@/hooks/products";
+import { set } from "date-fns";
 
 
 
@@ -125,6 +126,11 @@ export function ProductDashboardComponent() {
     </div>
   );
 
+  const successCallBack = () =>{
+    setIsAddingProduct(false)
+    productList()
+  }
+
   const AddProductButton = (
     <Dialog open={isAddingProduct} onOpenChange={setIsAddingProduct}>
       <DialogTrigger asChild>
@@ -133,11 +139,11 @@ export function ProductDashboardComponent() {
           Add Product
         </Button>
       </DialogTrigger>
-      <DialogContent>
+      <DialogContent className="max-h-[90vh] overflow-y-scroll"  >
         <DialogHeader>
           <DialogTitle>Add New Product</DialogTitle>
         </DialogHeader>
-        <AddProductForm setIsAddingProduct={setIsAddingProduct} productList={productList} />
+        <AddProductForm setIsAddingProduct={setIsAddingProduct} productList={productList} successCallBack={successCallBack}  />
       </DialogContent>
     </Dialog>
   );
@@ -153,14 +159,15 @@ export function ProductDashboardComponent() {
           <Sheet key={product?.id}>
             {/* <SheetTrigger asChild> */}
               <div className="rounded-lg border bg-card text-card-foreground shadow-sm cursor-pointer hover:shadow-md transition-shadow">
-                <Card className="rounded">
+                <Card className="rounded flex px-4 py-2 flex-row gap-10">
                   <Image
                     height={0}
                     width={0}
                     sizes="100vw"
                     src={product?.photo} alt={product?.name}
-                    className="w-full h-auto rounded-t"
+                    className="w-16 h-16 rounded-t"
                   />
+                 
                   <div className="p-2">
                     <h3 className="font-bold">{product?.name}</h3>
                     <p className="text-sm font-semibold text-gray-700">HSN Code: {product?.hsn}</p>
