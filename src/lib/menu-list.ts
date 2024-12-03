@@ -1,90 +1,99 @@
 import {
-  Users,
-  Settings,
-  ShoppingCart,
-  PackageSearch,
-  Truck,
-  type LucideIcon
-} from "lucide-react";
+	Users,
+	Settings,
+	ShoppingCart,
+	PackageSearch,
+	Truck,
+	type LucideIcon,
+	Map,
+	MapPinned,
+	LayoutList,
+} from 'lucide-react';
 
 interface Submenu {
-  href: string;
-  label: string;
-  active?: boolean;
+	href: string;
+	label: string;
+	active?: boolean;
 }
 
 interface Menu {
-  href: string;
-  label: string;
-  active: boolean;
-  icon: LucideIcon;
-  submenus?: Submenu[];
+	href: string;
+	label: string;
+	active: boolean;
+	icon: LucideIcon;
+	submenus?: Submenu[];
 }
 
 interface Group {
-  groupLabel: string;
-  menus: Menu[];
+	groupLabel: string;
+	menus: Menu[];
 }
 
 export function getMenuList(pathname: string): Group[] {
-  return [
-    // {
-    //   groupLabel: "",
-    //   menus: [
-    //     {
-    //       href: "/dashboard",
-    //       label: "Dashboard",
-    //       active: pathname.includes("/dashboard"),
-    //       icon: LayoutGrid,
-    //       submenus: []
-    //     }
-    //   ]
-    // },
-    {
-      groupLabel: "",
-      menus: [
-        {
-          href: "/suppliers",
-          label: "Suppliers",
-          active: pathname.includes("/suppliers"),
-          icon: Truck
-        },
-        {
-          href: "/customers",
-          label: "Customers",
-          active: pathname.includes("/customers"),
-          icon: ShoppingCart
-        },
-        {
-          href: "/products",
-          label: "Products",
-          active: pathname.includes("/products"),
-          icon: PackageSearch
-        },
-        {
-          href: "/orders",
-          label: "Orders",
-          active: pathname.includes("/orders"),
-          icon: PackageSearch
-        }
-      ]
-    },
-    {
-      groupLabel: "Settings",
-      menus: [
-        {
-          href: "/users",
-          label: "Users",
-          active: pathname.includes("/users"),
-          icon: Users
-        },
-        {
-          href: "/account",
-          label: "Account",
-          active: pathname.includes("/account"),
-          icon: Settings
-        }
-      ]
-    }
-  ];
+	return [
+		// {
+		//   groupLabel: "",
+		//   menus: [
+		//     {
+		//       href: "/dashboard",
+		//       label: "Dashboard",
+		//       active: pathname.includes("/dashboard"),
+		//       icon: LayoutGrid,
+		//       submenus: []
+		//     }
+		//   ]
+		// },
+		{
+			groupLabel: '',
+			menus: [
+				{
+					href: '/suppliers',
+					label: 'Suppliers',
+					active: pathname.includes('/suppliers'),
+					icon: Truck,
+				},
+				{
+					href: '/customers',
+					label: 'Customers',
+					active: pathname.includes('/customers'),
+					icon: ShoppingCart,
+				},
+				{
+					href: '/products',
+					label: 'Products',
+					active: pathname.includes('/products'),
+					icon: PackageSearch,
+				},
+				{
+					href: '/orders',
+					label: 'Orders',
+					active: pathname.includes('/orders'),
+					icon: LayoutList,
+				},
+				{
+					href: '/shipments',
+					label: 'Shipments',
+					active: pathname.includes('/shipments'),
+					icon: MapPinned,
+				},
+			],
+		},
+		{
+			groupLabel: 'Settings',
+			menus: [
+				{
+					href: '/users',
+					label: 'Users',
+					active: pathname.includes('/users'),
+					icon: Users,
+				},
+				{
+					href: '/account',
+					label: 'Account',
+					active: pathname.includes('/account'),
+					icon: Settings,
+				},
+			],
+		},
+	];
 }
