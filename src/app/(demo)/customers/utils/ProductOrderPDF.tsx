@@ -30,7 +30,7 @@ const ProductOrderPDF = ({
 			marginBottom: 5,
 		},
 		productTable: {
-			display: 'table',
+			 display: 'flex',
 			width: '100%',
 			borderStyle: 'solid',
 			borderWidth: 1,

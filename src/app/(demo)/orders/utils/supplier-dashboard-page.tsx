@@ -2,10 +2,9 @@
 
 import React, { useState, useEffect } from 'react';
 import { Navbar } from '@/components/admin-panel/navbar';
-import { Button } from '@/components/ui/button';
+
 import {
-	type Supplier,
-	supplierColumns,
+
 	salesOrderColumns,
 	purchaseOrderColumns,
 } from './columns';
@@ -14,12 +13,9 @@ import { Card } from '@/components/ui/card';
 import {
 	Dialog,
 	DialogContent,
-	DialogHeader,
-	DialogTitle,
-	DialogTrigger,
+
 } from '@/components/ui/dialog';
-import { Plus } from 'lucide-react';
-import AddSupplierForm from './add-supplier';
+
 import { ScrollArea } from '@/components/ui/scroll-area';
 import CreatePOForm from './CreatePOForm';
 import CreateSOForm from './CreateSOForm';
@@ -61,7 +57,7 @@ import { set } from 'date-fns';
 // 		// ...
 // 	];
 // }
-const STATUS_CHOICES = {
+const STATUS_CHOICES: { [key: string]: string } = {
 	'0': 'Confirmed',
 	'1': 'Pending',
 	'2': 'Processing',
@@ -71,7 +67,7 @@ const STATUS_CHOICES = {
 	'6': 'Cancelled',
 };
 
-const SupplierDashboardPage = (): JSX.Element => {
+const SupplierDashboardPage: React.FC = () => {
 	const [isAddingProduct, setIsAddingProduct] = useState(false);
 	const [isCreatingPO, setOpen] = useState(false);
 	const [orders, setOrders] = useState<any>([]);
@@ -121,47 +117,13 @@ const SupplierDashboardPage = (): JSX.Element => {
 
 	useEffect(() => {
 		const fetchData = async () => {
-			await listSupplier();
+			await listSupplier('');
 			await listSalesOrder();
 			await listPO();
 		};
 		fetchData();
 	}, []);
 
-	const AddSupplierButton = (
-		<Dialog open={isAddingProduct} onOpenChange={setIsAddingProduct}>
-			<DialogTrigger asChild>
-				<Button>
-					<Plus className='h-2 w-2' />
-					Add Supplier
-				</Button>
-			</DialogTrigger>
-			<DialogContent className='min-w-[80vw]'>
-				<DialogHeader>
-					<DialogTitle>Add New Supplier</DialogTitle>
-				</DialogHeader>
-				<ScrollArea className='max-h-[80vh] pr-4'>
-					<AddSupplierForm />
-				</ScrollArea>
-			</DialogContent>
-		</Dialog>
-	);
-
-	const CreatePOButton = (
-		<Dialog open={isCreatingPO} onOpenChange={setOpen}>
-			<DialogTrigger asChild>
-				<Button>Create PO</Button>
-			</DialogTrigger>
-			<DialogContent className='min-w-[95vw]'>
-				<DialogHeader>
-					<DialogTitle>Create Product Order</DialogTitle>
-				</DialogHeader>
-				<ScrollArea className='max-h-[80vh] pr-4'>
-					<CreatePOForm />
-				</ScrollArea>
-			</DialogContent>
-		</Dialog>
-	);
 	return (
 		<div>
 			<Navbar
@@ -170,10 +132,14 @@ const SupplierDashboardPage = (): JSX.Element => {
 				buttons={[]}
 			/>
 			<Dialog open={isCreatingPO} onOpenChange={setOpen}>
-			
 				<DialogContent className='min-w-[95vw]'>
 					<ScrollArea className='max-h-[80vh] pr-4'>
-					{ isCreatingSO ? <> <CreateSOForm data={displayData} listPO={listSalesOrder} /> </> : <><CreatePOForm data={displayData} listPO={listPO} /></>}
+						{isCreatingSO ? (
+							<CreateSOForm data={displayData} listPO={listSalesOrder} />
+							
+						) : (
+							<CreatePOForm data={displayData} listPO={listPO} />
+						)}
 					</ScrollArea>
 				</DialogContent>
 			</Dialog>
@@ -192,7 +158,6 @@ const SupplierDashboardPage = (): JSX.Element => {
 						console.log(data);
 						setOpen(true);
 						setIsCreatingSO(true);
-
 					}}
 				/>
 			</Card>

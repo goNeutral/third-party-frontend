@@ -40,7 +40,9 @@ const SupplierDashboardPage = (): JSX.Element => {
 		
 	  }
 	);
-  
+
+	
+
 	useEffect(() => {
 	  const fetchData = async () => {
 		 await listSupplier();
@@ -64,7 +66,7 @@ const SupplierDashboardPage = (): JSX.Element => {
 		setIsCreatingPO(false)
 		setIsAddingProduct(false)
 		// setEditing(false)
-		// await listSupplier()
+		await listSupplier()
 
 	}
  

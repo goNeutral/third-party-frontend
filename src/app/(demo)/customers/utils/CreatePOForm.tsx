@@ -88,7 +88,7 @@ export default function CreatePOForm(): JSX.Element {
 			}));
 			const cust = customerList.find(
 				(customer: any) => customer.name === values.shipTo
-				);
+			) || { id: '' };
 			console.log(cust);
 			const salesData = {
 				customer: cust?.id,

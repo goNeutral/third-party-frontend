@@ -48,7 +48,7 @@ export function Sidebar(): JSX.Element {
 									: 'translate-x-0 opacity-100'
 							)}
 						>
-							GoNeutral
+							Climosphere
 						</h1>
 					</Link>
 				</Button>

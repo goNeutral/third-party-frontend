@@ -68,7 +68,7 @@ const POFormProductForm = ({ products, setProducts }: { products: any; setProduc
 		const product = productList.find((product: any) => product.name === value)
 		
 		console.log(product)
-		setNewProduct((prev) => ({
+		setNewProduct((prev:any) => ({
 			...prev,
 			name: product.name,
 			hsn: product.hsn,
@@ -81,7 +81,7 @@ const POFormProductForm = ({ products, setProducts }: { products: any; setProduc
 
 	const handleSubmit = (e: React.FormEvent): void => {
 		e.preventDefault()
-		setProducts((prev) => [...prev, newProduct])
+		setProducts((prev:any) => [...prev, newProduct])
 		setNewProduct({
 			id: 0,
 			name: "",
@@ -138,7 +138,7 @@ const POFormProductForm = ({ products, setProducts }: { products: any; setProduc
 					</TableRow>
 				</TableHeader>
 				<TableBody>
-					{products.map((product) => (
+					{products.map((product:any) => (
 						<TableRow key={product.id}>
 							<TableCell className="border text-left">{product.name}</TableCell>
 							<TableCell className="border text-left">{product.hsn}</TableCell>

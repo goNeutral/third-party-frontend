@@ -3,7 +3,7 @@
 import React, { useState,useEffect } from "react";
 import { Navbar } from "@/components/admin-panel/navbar";
 import { Button } from "@/components/ui/button";
-import { type Customer, customerColumns } from "./columns";
+import {  customerColumns } from "./columns";
 import { DataTable } from "@/components/ui/data-table";
 import { Card } from "@/components/ui/card";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
@@ -12,44 +12,6 @@ import AddCustomerForm from "./add-customer";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import {listCustomerMutation} from "@/hooks/customer"
 import CreatePOForm from "./CreatePOForm";
-
-
-
-function getCustomers(): Customer[] {
-    // Fetch data from your API here.
-    return [
-      {
-        id: "728ed52f",
-        customerName: "Customer 1",
-        registeredEntityName: "Registered Entity 1",
-        city: "Kanpur",
-        gstStatus: "active",
-        paymentStatus: "pending",
-        businessTillDate: "Business Till Date 1",
-      },
-      {
-        id: "728ed52k",
-        customerName: "Customer 2",
-        registeredEntityName: "Registered Entity 2",
-        city: "Gurgaon",
-        gstStatus: "inactive",
-        paymentStatus: "completed",
-        businessTillDate: "Business Till Date 2",
-      }, {
-        id: "728ed52l",
-        customerName: "Customer 3",
-        registeredEntityName: "Registered Entity 3",
-        city: "Indore",
-        gstStatus: "active",
-        paymentStatus: "pending",
-        businessTillDate: "Business Till Date 3",
-      }
-      // ...
-    ]
-  }
-
-
-
 
 const CustomerDashboardPage = (): JSX.Element => {
   const [isAddingProduct, setIsAddingProduct] = useState(false);

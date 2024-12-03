@@ -36,7 +36,7 @@ const OrderForm = () => {
 		deliveryTerms: '',
 	});
 
-	const [products, setProducts] = useState([]);
+	const [products, setProducts] = useState<any[]>([]);
 	const [currentProduct, setCurrentProduct] = useState({
 		description: '',
 		hsnCode: '',
@@ -49,7 +49,7 @@ const OrderForm = () => {
 		igst: '0',
 	});
 
-	const handleCustomerChange = (e) => {
+	const handleCustomerChange = (e:any) => {
 		const { name, value } = e.target;
 		setCustomer((prev) => ({
 			...prev,
@@ -57,19 +57,19 @@ const OrderForm = () => {
 		}));
 	};
 
-	const handleSelectChange = (value, field) => {
+	const handleSelectChange = (value: string, field: string) => {
 		setCustomer((prev) => ({
 			...prev,
 			[field]: value,
 		}));
 	};
 
-	const calculateAmount = (quantity, rate, discount = 0) => {
+	const calculateAmount = (quantity: number, rate: number, discount = 0) => {
 		const baseAmount = quantity * rate;
 		return baseAmount - baseAmount * (discount / 100);
 	};
 
-	const handleProductChange = (e) => {
+	const handleProductChange = (e:any) => {
 		const { name, value } = e.target;
 		setCurrentProduct((prev) => {
 			const newProduct = {
@@ -97,7 +97,7 @@ const OrderForm = () => {
 			currentProduct.quantity &&
 			currentProduct.rate
 		) {
-			setProducts((prev) => [
+			setProducts((prev:any) => [
 				...prev,
 				{ ...currentProduct, id: Date.now() },
 			]);
@@ -115,7 +115,7 @@ const OrderForm = () => {
 		}
 	};
 
-	const removeProduct = (id) => {
+	const removeProduct = (id:any) => {
 		setProducts((prev) => prev.filter((product) => product.id !== id));
 	};
 
@@ -160,7 +160,7 @@ const OrderForm = () => {
 		);
 	};
 
-	const handleSubmit = (e) => {
+	const handleSubmit = (e:any) => {
 		e.preventDefault();
 		generatePDF();
 	};
@@ -464,7 +464,7 @@ const OrderForm = () => {
 			</Button>
 			
 		</form>
-		<PDFDownloadLink 
+		{/* <PDFDownloadLink 
 			document={<ProductOrderPDF customerDetails={customer} products={products} />} 
 			fileName="somename.pdf">
 			{({ blob, url, loading, error }) =>  {
@@ -501,7 +501,7 @@ event.preventDefault();
                 </span>
               );
             }}
-		</PDFDownloadLink>
+		</PDFDownloadLink> */}
 		<Button onClick={() => setShowPDF(true)}>Show PDF</Button>
 		{showPDF && <PDFViewer width={500} height={500}>
 				<ProductOrderPDF
