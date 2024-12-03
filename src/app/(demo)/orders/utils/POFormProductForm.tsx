@@ -65,34 +65,34 @@ const POFormProductForm = ({
 		igst: 0,
 	});
 
-	const handleInputChange = (
-		e: React.ChangeEvent<HTMLInputElement>
-	): void => {
-		const { name, value } = e.target;
-		const data = { ...newProduct };
-		data[name] = value;
-		data['amount'] = data.quantity * data.rate;
-		data['netAmount'] = data['amount'] * (1 - data.discount / 100);
-		setNewProduct(data);
-		console.log(newProduct, name, value);
-	};
+	// const handleInputChange = (
+	// 	e: React.ChangeEvent<HTMLInputElement>
+	// ): void => {
+	// 	const { name, value } = e.target;
+	// 	const data = { ...newProduct };
+	// 	data[name] = value;
+	// 	data['amount'] = data.quantity * data.rate;
+	// 	data['netAmount'] = data['amount'] * (1 - data.discount / 100);
+	// 	setNewProduct(data);
+	// 	console.log(newProduct, name, value);
+	// };
 
-	const handleSelectChange = (value: string): void => {
-		const product = productList.find(
-			(product: any) => product.name === value
-		);
+	// const handleSelectChange = (value: string): void => {
+	// 	const product = productList.find(
+	// 		(product: any) => product.name === value
+	// 	);
 
-		console.log(product);
-		setNewProduct((prev) => ({
-			...prev,
-			name: product.name,
-			hsn: product.hsn,
-			id: product.id,
-			cgst: product.cgst,
-			sgst: product.sgst,
-			igst: product.igst,
-		}));
-	};
+	// 	console.log(product);
+	// 	setNewProduct((prev:any) => ({
+	// 		...prev,
+	// 		name: product.name,
+	// 		hsn: product.hsn,
+	// 		id: product.id,
+	// 		cgst: product.cgst,
+	// 		sgst: product.sgst,
+	// 		igst: product.igst,
+	// 	}));
+	// };
 
 	// const handleSubmit = (e: React.FormEvent): void => {
 	// 	e.preventDefault()
@@ -169,7 +169,7 @@ const POFormProductForm = ({
 					</TableRow>
 				</TableHeader>
 				<TableBody>
-					{products.map((product) => (
+					{products.map((product:any) => (
 						<TableRow key={product.id}>
 							<TableCell className='border text-left'>
 								{product.name}

@@ -59,7 +59,7 @@ export interface ProductCell {
 	igst: number;
 }
 
-export default function CreatePOForm(successCallBack: () => void): JSX.Element {
+export default function CreatePOForm({successCallBack}: { successCallBack: () => void }): JSX.Element {
 	const [products, setProducts] = useState<ProductCell[]>([]);
 	const [productList, setProductList] = useState([]);
 	const [shipTo, setshipTo] = useState('');

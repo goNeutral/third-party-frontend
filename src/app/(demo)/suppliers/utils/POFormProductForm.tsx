@@ -22,10 +22,26 @@ import {
 	TableRow,
 } from '@/components/ui/table';
 import { Button } from '@/components/ui/button';
-import displayCost from  '@/utils/display'
+// import displayCost from '@/utils/display;
 import { type ProductCell } from './CreatePOForm';
 // import { searchProductMutation } from '@/hooks/products';
+const displayCost = (cost:Number) => {
+	// Convert to two decimal places
+	let val = `${cost.toFixed(2)}`;
+	console.log(val)
+  
+	// Add commas as per the Indian numbering system
+	val = val.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 
+	console.log(val)
+
+	val = val.replace(/(\d+)(?=(\d{2}){1,2}\.)/g, (match, p1) => {
+	  const parts = p1.split(/(?=(?:\d{2})+(?:\.\d{0,2})?$)/);
+	  return parts.join(",");
+	});
+  
+	return val;
+  };
 const POFormProductForm = ({
 	products,
 	setProducts,
@@ -49,7 +65,7 @@ const POFormProductForm = ({
 		sgst: 0,
 		igst: 0,
 	});
-	// 	const [productList, setProductList] = useState<any>([]);
+		// const [productList, setProductList] = useState<any>([]);
 
 	//   const { mutate: searchProduct } = searchProductMutation(
 	//     (data: any) => {
@@ -61,12 +77,12 @@ const POFormProductForm = ({
 	//     }
 	//   );
 
-	useEffect(() => {
-		const fetchData = async () => {
-			await searchProduct(null);
-		};
-		fetchData();
-	}, []);
+	// useEffect(() => {
+	// 	const fetchData = async () => {
+	// 		await searchProduct(null);
+	// 	};
+	// 	fetchData();
+	// }, []);
 
 	const handleInputChange = (
 		e: React.ChangeEvent<HTMLInputElement>
@@ -86,7 +102,7 @@ const POFormProductForm = ({
 		);
 
 		console.log(product);
-		setNewProduct((prev) => ({
+		setNewProduct((prev:any) => ({
 			...prev,
 			name: product.name,
 			hsn: product.hsn,
@@ -99,7 +115,7 @@ const POFormProductForm = ({
 
 	const handleSubmit = (e: React.FormEvent): void => {
 		e.preventDefault();
-		setProducts((prev) => [...prev, newProduct]);
+		setProducts((prev:any) => [...prev, newProduct]);
 		setNewProduct({
 			id: 0,
 			name: '',
@@ -172,67 +188,63 @@ const POFormProductForm = ({
 					</TableRow>
 				</TableHeader>
 				<TableBody>
-					{products.map((product) => (
-						<TableRow key={product.id}>
+					{products.map((product:any) => (
+						<TableRow key={product?.id}>
 							<TableCell className='border text-left'>
-								{product.name}
+								{product?.name}
 							</TableCell>
 							<TableCell className='border text-left'>
-								{product.hsn}
+								{product?.hsn}
 							</TableCell>
 							<TableCell className='border text-right'>
-								{product.quantity}
+								{product?.quantity}
 							</TableCell>
 							<TableCell className='border text-right'>
-								{product.unit}
+								{product?.unit}
 							</TableCell>
 							<TableCell className='border text-right'>
-								{product.rate}
+								{product?.rate}
 							</TableCell>
 							<TableCell className='border text-right'>
-								{displayCost(product.amount)}
+								{displayCost(product?.amount)}
 							</TableCell>
 							<TableCell className='border text-right'>
-								{product.discount}
+								{product?.discount}
 							</TableCell>
 							<TableCell className='border text-right'>
 								<div className='grid grid-cols-3'>
 									<div className='pr-1 border-r'>
-										{product.cgst}
+										{product?.cgst}
 									</div>
 									<div className='col-span-2 pl-1'>
-										{displayCost(0.01*product.cgst * product.netAmount)}
+										{displayCost(0.01*product?.cgst * product?.netAmount)}
 									</div>
 								</div>
 							</TableCell>
 							<TableCell className='border text-right'>
 								<div className='grid grid-cols-3'>
 									<div className='pr-1 border-r'>
-										{product.sgst}
+										{product?.sgst}
 									</div>
 									<div className='col-span-2 pl-1'>
-										{ displayCost(0.01 * product.sgst * product.netAmount)}
+										{ displayCost(0.01 * product?.sgst * product?.netAmount)}
 									</div>
 								</div>
 							</TableCell>
 							<TableCell className='border text-right'>
 								<div className='grid grid-cols-3'>
 									<div className='pr-1 border-r'>
-										{product.igst}
+										{product?.igst}
 									</div>
 									<div className='col-span-2 pl-1'>
-										{displayCost(0.01*product.igst * product.netAmount)}
+										{displayCost(0.01*product?.igst * product?.netAmount)}
 									</div>
 								</div>
 							</TableCell>
 							<TableCell className='border text-right'>
 							{displayCost(
-									product.netAmount *
-										(1 +
-											(product.igst +
-												product.sgst +
-												product.cgst) /
-												100)
+									product?.netAmount + (0.01*product?.igst * product?.netAmount) + (0.01*product?.sgst * product?.netAmount) + (0.01*product?.cgst * product?.netAmount)
+									// (product?.igst + product?.sgst + product?.cgst)
 								)}
 							</TableCell>
 						</TableRow>
@@ -311,7 +323,7 @@ const POFormProductForm = ({
 						<TableCell colSpan={3} />
 					</TableRow>
 				</TableBody>
-				<TableFooter>
+				{/* <TableFooter>
 					<TableRow>
 						<TableCell
 							className='border text-right'
@@ -336,7 +348,7 @@ const POFormProductForm = ({
 							2500.00
 						</TableCell>
 					</TableRow>
-				</TableFooter>
+				</TableFooter> */}
 			</Table>
 		</Card>
 	);

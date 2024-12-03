@@ -20,14 +20,14 @@ const ProductDashboardStats = ({className}: {className?: string}): JSX.Element =
                         <StatItem
                             title="Total Weight Procured"
                             value={`${stats.totalWeight.toLocaleString()} kg`}
-                            icon={Truck}
+                            icon={<></>}
                         />
                         <StatItem
                             title="Total Cost"
                             value={`$${stats.totalCost.toLocaleString()}`}
-                            icon={DollarSign}
+                            icon={<></>}
                         />
-                        <StatItem
+                        {/* <StatItem
                             title="Material Shipped"
                             value={`${stats.materialShipped.toLocaleString()} kg`}
                             icon={Package}
@@ -36,7 +36,7 @@ const ProductDashboardStats = ({className}: {className?: string}): JSX.Element =
                             title="Pending Status"
                             value={stats.pendingStatus}
                             icon={Clock}
-                        />
+                        /> */}
                     </div>
                 </Card>
         </div>
@@ -48,7 +48,7 @@ const StatItem = ({ title, value, icon: Icon }:
     { title: string; value: string; icon: JSX.Element }): JSX.Element => (
     <div className="flex items-center space-x-4">
         <div className="p-2 bg-primary/10 rounded-full">
-            <Icon className="h-2 w-2 text-primary" />
+            {/* <Icon className="h-2 w-2 text-primary" /> */}
         </div>
         <div className="flex flex-row justify-between w-full space-y-2">
             <p className="text-sm font-medium text-muted-foreground">{title}</p>

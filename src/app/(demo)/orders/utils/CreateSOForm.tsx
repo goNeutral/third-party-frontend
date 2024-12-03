@@ -76,7 +76,7 @@ export interface ProductCell {
 	igst: number;
 }
 
-export default function CreateSOForm(data: any, listPO: any): JSX.Element {
+export default function CreateSOForm(data: any, listPO: any): React.FC  {
 	const [products, setProducts] = useState<ProductCell[]>([]);
 	const [productList, setProductList] = useState([]);
 	console.log(data.data);
