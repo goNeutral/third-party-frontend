@@ -1,15 +1,20 @@
-type Role = "admin" | "seller" | "customer";
+export enum UserRole {
+	ADMIN,
+	CUSTOMER,
+	SUPPLIER,
+	ACCOUNTING,
+}
 
-interface User {
-    id: string;
-    email: string;
-    name: string;
-    picture?: string;
-    role: Role;
+export interface User {
+	id: string;
+	email: string;
+	name: string;
+	picture?: string;
+	role: UserRole;
 }
 
 interface AuthState {
-    isAuthenticated: boolean;
-    user: User | null;
-    loading: boolean;
+	isAuthenticated: boolean;
+	user: User | null;
+	loading: boolean;
 }
